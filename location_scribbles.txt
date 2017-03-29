@@ -1,0 +1,54 @@
+describe("Batch Operations..", function(){
+
+        describe("Are successful if...", function(){
+
+            it("Returns a status of complete and multiple postcodes geolocated ", function(){
+
+            })
+
+            it("Returns a status of complete if a single postcode geolocated", function(){
+
+            })
+
+            it("Returns a status of complete if no postcodes provided", function(){
+
+            })
+        })
+
+        describe("Are Incomplete if ", function(){
+
+            it("does not geolocate all locations", function(){
+
+            })
+        })
+
+        describe("Is unsuccessful if... ", function(){
+
+            it ( "cannot connect to the Geolocation service", function(){
+
+            })
+
+            it("cannot extract any valid postcode data", function(){
+
+            })
+        })
+    })
+
+    describe("Geolocations...", function(){
+
+        describe("Response Handlers...", function(){
+
+        
+            it("adds item to success array if successful response received", function(){
+
+            })
+
+            it("adds item to retry array if rate limited", function(){
+
+            })
+
+            it("adds item to failed array if failed", function(){
+
+            })
+        })
+    })

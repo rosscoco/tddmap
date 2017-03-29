@@ -1,0 +1,21 @@
+<html>
+    <head>
+        <script>
+            function initMap()
+            {
+                console.log("ready");
+
+                var map = new google.maps.Geocoder();	
+
+                map.geocode({address:"cm1 4qs"}, function( result, status){
+                    console.log(status)
+                    console.log(JSON.stringify(result));
+                })
+            }
+        </script>
+    </head>
+    <body>
+        
+    </body>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyA7xLdqgqtSifsGdyuONVK0NEnKrT-Zk4o&callback=initMap"></script>
+</html>
