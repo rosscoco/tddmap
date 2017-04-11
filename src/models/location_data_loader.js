@@ -1,65 +1,47 @@
-function LocationLoader( fileReader, dataparser, onComplete ){
+function LocationLoader( parser, onComplete, parseOptions ){
 
     var result;
-    this.fileReader         = fileReader;
-    this.file               = "No File Selected";
-    this.parser             = dataparser;
-    this.onComplete         = onComplete;
+    this.file           = "No File Selected";
+
+    this.parseOptions                   = parseOptions || {};
+    this.parseOptions.skipEmptyLines    =  true;
+    this.parseOptions.header            =  true;
+    this.parseOptions.complete          = this.onParseComplete.bind(this);
+    this.parseOptions.error             = this.onParseError.bind(this);
     
-    fileReader.onloadstart  = this.onFileReadStart;
-    fileReader.onprogress   = this.onFileReadProgress;    
-    fileReader.onload       = this.onFileLoaded;
-    fileReader.onloadend    = this.onFileReadLoadEnd;
-    fileReader.onabort      = this.onFileReadError;
-    fileReader.onerror      = this.onFileReadError;
+    this.parser         = parser;
+    this.onComplete     = onComplete;
 }
 
 var _p = LocationLoader.prototype;
 
-_p.cancelLoad = function()
-{
-    switch ( this.reader.readyState )
-    {
-        case 0:                         
-        case 1:     reader.abort();
-                    this.onComplete(new Error("Load was cancelled before completing"));
-                    break;
-        case 2:     
-                    break;
-        default:
-    }
-}
-
 _p.onFileSelected = function( event ){
     var input = event.target;
     this.file = input.files[ 0 ];
-    reader.readAsText( this.file );
+    this.parser.parse( this.file, this.parseOptions );
 }
 
-_p.onLocationFileLoaded = function(event){
-    result = reader.result;
-    onComplete(null, "Loaded!");
+_p.onParseComplete = function( results ){
+
+    
+    var headers = results.meta.fields.join("");
+    var allHeadersPresent = ["name", "location", "terminal"].every( function( header ){
+        return headers.indexOf( header ) !== -1;
+    })
+
+    if ( allHeadersPresent )    this.onComplete( null, results );
+    else                        this.onFieldNameError( results );
 }
 
-_p.onFileReadStart = function(event){
-
-}
-
-_p.onFileReadProgress = function(event){
+_p.onParseError = function( results ){
     
 }
 
-_p.onFileLoaded = function(event){
-    
+_p.onFieldNameError = function( results ) {
+    console.log(this)
+    this.onComplete("Expected name/location/terminal as headers, got:" + results.meta.fields.join("/"), results );
 }
 
-_p.onFileReadLoadEnd = function(event){
-    
-}
+module.exports = LocationLoader;
 
-_p.onFileReadError = function(event){
-    this.onComplete( new Error("File Could Not Be Loaded"), null );
-}
-
-module.exports = LocationParser;
 

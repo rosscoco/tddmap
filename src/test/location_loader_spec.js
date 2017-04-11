@@ -1,13 +1,16 @@
-var LocationParser = require('../models/location_data_loader');
+var LocationLoader = require('../models/location_data_loader');
+var Helpers = require('./helpers/csvparsing.js');
 var sinon = require("sinon");
 var chai = require('chai');
+var expect = chai.expect;
 chai.should();
 
 describe("Should load a list of locations from a local csv or txt file", function(){
 
-    function FileReaderStub()
+    function FileParserStub()
     {
         this.readyState = 0;
+        this.onComplete
     }
 
     describe("Loading functions", function(){
@@ -26,54 +29,38 @@ describe("Should load a list of locations from a local csv or txt file", functio
 
         it("Is unsuccessful if...", function(){
 
-            var siteLoader, fileReader, fileSelectedEvent;            
-
-            beforeEach( function(){
-                fileReader          = new FileReaderStub();              
-                fileSelectedEvent   = { target: { files:["file.txt"] } };
-            });
-
-            it("cannot open the file", function(){
-               
-               siteLoader = new LocationParser( fileReader, function( err, res ){
-                    expect( err ).to.not.be.null;
-                    expect( res ).to.be.empty;
-                });
-                
-                sinon.stub( fileReader,"readAsText", fileReader.onerror );
-                siteLoader.onFileSelected( fileSelectedEvent );
-            })
-
-            xit("the file is empty", function(){
-                siteLoader = new LocationParser( fileReader, function( err, res ){
-                    expect(err).to.not.be.null;
-                    expect(res).to.be.empty;
-                });
-
-                reader.result = "";
-                sinon.stub( fileReader,"readAsText", fileReader.onload );
-            })
-
-            it("cannot extract any locations from the data", function(){
-                siteLoader = new LocationParser( fileReader, function( err, res ){
-                    expect( err ).to.not.be.null;
-                    expect( res ).to.be.empty;
-                });
-
-                reader.result = "vcneowecvf niowenm iowegwe oigwempoi gewpog";
-                sinon.stub( fileReader,"readAsText", fileReader.onload );
-            });
-
-            it("finds a malformed data structure", function(){
-
-            });            
+  
         });
     })
 
     describe("Extraction Functions", function()
     {
-        it("Is Successful if", function()
+        describe("Is Successful if", function()
         {
+            it("the header fields have been defined correctly", function(){
+                console.log("running test")
+                var fileSelectedEvent   = { target: { files:["file.txt"] } };
+
+                function StubParser()
+                {
+                    this.parse = function( file,args )
+                    {
+                        args.complete( Helpers.successfulParseWithHeaders );
+                    }
+                }
+
+                function onComplete( err, results ) {
+             
+                    expect( results.meta.fields[0].should.equal('name') );
+                    expect( results.meta.fields[1].should.equal('location') );
+                    expect( results.meta.fields[2].should.equal('terminal') );
+                }
+
+                var loader = new LocationLoader( new StubParser, onComplete );
+                loader.onFileSelected( fileSelectedEvent );
+            })
+
+
             it("Can extract name, location and terminal from an input string", function()
             {
 
@@ -82,7 +69,7 @@ describe("Should load a list of locations from a local csv or txt file", functio
 
         it("is Unsuccessful if", function()
         {
-            it("cannot find a site name", function(){
+            it("3 header fields have not been defined", function(){
 
             })
 

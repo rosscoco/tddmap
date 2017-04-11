@@ -9,7 +9,7 @@ var reader = new FileReader()
 
 console.log("opened")
 
-function printEventType(event)
+function printEventType( event )
 {
     console.log( event.type );
 }    
