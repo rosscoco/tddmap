@@ -1,85 +1,79 @@
 var LocationLoader = require('../models/location_data_loader');
-var Helpers = require('./helpers/csvparsing.js');
+var GoodParseWithHeaders = require('./helpers/csvparsing.js').getGoodParseWithHeaders;
+var StubParser  = require('./helpers/csvparsing.js').StubParser;
 var sinon = require("sinon");
 var chai = require('chai');
 var expect = chai.expect;
 chai.should();
 
-describe("Should load a list of locations from a local csv or txt file", function(){
 
-    function FileParserStub()
-    {
-        this.readyState = 0;
-        this.onComplete
-    }
+describe("Checking CSV field names", function(){
+    
+    var fileSelectedEvent, loader, result;
 
-    describe("Loading functions", function(){
 
-        var fileReader, stub, fileSelectedEvent      
-        it("Is Successful if....", function(){
-            
-            beforeEach( function(){
-
-            });
-        
-            it("parses a valid input for each line in the file", function( done ){
-
-            });
-        })
-
-        it("Is unsuccessful if...", function(){
-
-  
-        });
+    beforeEach(function(){
+        result = GoodParseWithHeaders();
+        fileSelectedEvent   = { target: { files:["file.txt"] } };
     })
 
-    describe("Extraction Functions", function()
-    {
-        describe("Is Successful if", function()
-        {
-            it("the header fields have been defined correctly", function(){
-                console.log("running test")
-                var fileSelectedEvent   = { target: { files:["file.txt"] } };
+    it("needs a minimum of three headers", function(){
+        function onComplete( err, results ) {
+            expect( err ).to.not.be.null;
+        }
 
-                function StubParser()
-                {
-                    this.parse = function( file,args )
-                    {
-                        args.complete( Helpers.successfulParseWithHeaders );
-                    }
-                }
+        result.meta.fields.pop();
+        
+        var loader = new LocationLoader( new StubParser( result ), onComplete );
+        loader.onFileSelected( fileSelectedEvent );
+    })
 
-                function onComplete( err, results ) {
-             
-                    expect( results.meta.fields[0].should.equal('name') );
-                    expect( results.meta.fields[1].should.equal('location') );
-                    expect( results.meta.fields[2].should.equal('terminal') );
-                }
-
-                var loader = new LocationLoader( new StubParser, onComplete );
-                loader.onFileSelected( fileSelectedEvent );
-            })
-
-
-            it("Can extract name, location and terminal from an input string", function()
-            {
-
-            });
-        })
-
-        it("is Unsuccessful if", function()
-        {
-            it("3 header fields have not been defined", function(){
-
-            })
-
-            it("cannot find a valid location", function(){
-
-            })
-
-            it("cannot find an associated terminal", function(){
-
-            })
-        })
+    it("expects name, location, and terminal to be defined as header fields", function(){
+        function onComplete( err, results ) {
+            expect( err ).to.be.null;
+            expect( results.meta.fields.indexOf("name")).to.be.gte(0);
+            expect( results.meta.fields.indexOf("terminal")).to.be.gte(0);
+            expect( results.meta.fields.indexOf("location")).to.be.gte(0);
+        }
+        //result = Helpers.getGoodParseWithHeaders();
+        var loader = new LocationLoader( new StubParser( result ), onComplete );
+        loader.onFileSelected( fileSelectedEvent );
     })
 })
+
+describe("Checking for valid header field definitions...",function(){
+    
+    var completeCb, result, fileSelectedEvent;
+    
+    beforeEach( function(){
+        completeCb = function ( err, results ) {
+            expect( err ).to.not.be.null;
+        }
+
+        result = GoodParseWithHeaders();
+        fileSelectedEvent   = { target: { files:["file.txt"] } };        
+    })
+
+    it("returns an error if name is not defined", function(){            
+        
+        result.meta.fields = ["notname", "location","terminal"];
+        
+        var loader = new LocationLoader( new StubParser( result ), completeCb );
+        loader.onFileSelected( fileSelectedEvent );
+    })
+
+    it("returns an error if teminal is not defined", function(){
+        result.meta.fields = ["name", " location","terminal"];
+        
+        var loader = new LocationLoader( new StubParser( result ), completeCb );
+        loader.onFileSelected( fileSelectedEvent );
+    })
+
+    it("returns an error if location is not defined", function(){
+        result.meta.fields = ["name", "location"," terminal "];
+        
+        var loader = new LocationLoader( new StubParser( result ), completeCb );
+        loader.onFileSelected( fileSelectedEvent );
+    })
+})
+

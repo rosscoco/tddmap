@@ -23,14 +23,16 @@ _p.onFileSelected = function( event ){
 
 _p.onParseComplete = function( results ){
 
-    
     var headers = results.meta.fields.join("");
     var allHeadersPresent = ["name", "location", "terminal"].every( function( header ){
-        return headers.indexOf( header ) !== -1;
+        return results.meta.fields.indexOf( header ) !== -1;
     })
 
-    if ( allHeadersPresent )    this.onComplete( null, results );
-    else                        this.onFieldNameError( results );
+    if ( allHeadersPresent && results.meta.fields.length >= 3 ){
+         this.onComplete( null, results );
+    } else {
+        this.onFieldNameError( results );
+    }
 }
 
 _p.onParseError = function( results ){
@@ -38,8 +40,7 @@ _p.onParseError = function( results ){
 }
 
 _p.onFieldNameError = function( results ) {
-    console.log(this)
-    this.onComplete("Expected name/location/terminal as headers, got:" + results.meta.fields.join("/"), results );
+    this.onComplete("name/location/terminal are not defined as headers", results );
 }
 
 module.exports = LocationLoader;
