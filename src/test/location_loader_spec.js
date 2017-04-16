@@ -11,7 +11,6 @@ describe("Checking CSV field names", function(){
     
     var fileSelectedEvent, loader, result;
 
-
     beforeEach(function(){
         result = GoodParseWithHeaders();
         fileSelectedEvent   = { target: { files:["file.txt"] } };
@@ -35,6 +34,7 @@ describe("Checking CSV field names", function(){
             expect( results.meta.fields.indexOf("terminal")).to.be.gte(0);
             expect( results.meta.fields.indexOf("location")).to.be.gte(0);
         }
+
         //result = Helpers.getGoodParseWithHeaders();
         var loader = new LocationLoader( new StubParser( result ), onComplete );
         loader.onFileSelected( fileSelectedEvent );
@@ -74,6 +74,28 @@ describe("Checking for valid header field definitions...",function(){
         
         var loader = new LocationLoader( new StubParser( result ), completeCb );
         loader.onFileSelected( fileSelectedEvent );
+    })
+})
+
+describe("Extracts a location from the data", function()
+{
+    it("is successful only if all fields are defined", function(){
+        
+    })
+
+    it("is successful only if the terminal is on the accepted terminals list",function(){
+
+    })
+})
+
+describe("Returns multiple entries", function(){
+
+    it("Completes with a list of successful loads", function(){
+
+    })
+
+    it("Completes with a list of unsuccessful loads", function(){
+
     })
 })
 

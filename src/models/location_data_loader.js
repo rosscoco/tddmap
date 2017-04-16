@@ -6,8 +6,8 @@ function LocationLoader( parser, onComplete, parseOptions ){
     this.parseOptions                   = parseOptions || {};
     this.parseOptions.skipEmptyLines    =  true;
     this.parseOptions.header            =  true;
-    this.parseOptions.complete          = this.onParseComplete.bind(this);
-    this.parseOptions.error             = this.onParseError.bind(this);
+    this.parseOptions.complete          = this.onParseComplete.bind( this );
+    this.parseOptions.error             = this.onParseError.bind( this );
     
     this.parser         = parser;
     this.onComplete     = onComplete;
