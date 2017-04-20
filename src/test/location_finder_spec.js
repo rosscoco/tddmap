@@ -33,7 +33,7 @@ describe('Batch Location Finder', function(){
                     sinon.spy( batchGeocoder,'onGeocodeResponse' );
                     sinon.stub( geocoder,'geocode').yieldsAsync( helpers.singleValidGeocodeResponse,"OK");
 
-                   batchGeocoder.start(); 
+                   batchGeocoder.start();
                 })
 
                 it('should add the location to the success array if a single valid location is returned', function(done){

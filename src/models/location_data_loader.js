@@ -22,25 +22,67 @@ _p.onFileSelected = function( event ){
 }
 
 _p.onParseComplete = function( results ){
-
+    console.log("onParseComplete")
     var headers = results.meta.fields.join("");
-    var allHeadersPresent = ["name", "location", "terminal"].every( function( header ){
-        return results.meta.fields.indexOf( header ) !== -1;
-    })
+    var success = this.areHeadersPresent( results.meta.fields );
+    results     = this.removeInvalidResults( results );
 
-    if ( allHeadersPresent && results.meta.fields.length >= 3 ){
+    if ( success ){
          this.onComplete( null, results );
-    } else {
+    } else if (!this.areHeadersPresent( results.meta.fields)) {
         this.onFieldNameError( results );
     }
 }
 
-_p.onParseError = function( results ){
+//check for empty strings and add to error array
+_p.removeInvalidResults = function( resultsToCheck ){
+    newResults = {data:[], error:[]}
     
+
+    function isValidData( dataObj ){
+        var isValid = true;
+        var errors = [];
+        for ( var property in dataObj ){
+            if ( dataObj.hasOwnProperty(property)){
+                if ( dataObj[property].replace(/\s/g," ").length === 0 ){
+                    errors.push(property + "is not defined.");
+                    isValid = false;
+                }
+            }
+        }
+
+        return { isValid:isValid, errors:errors.join(" ") };
+    }
+
+
+    var isValidResult;
+    resultsToCheck.data.forEach( function( result ) {
+        isValidResult = isValidData( result );
+        if ( isValidResult.isValid ){
+            data.push( result )
+        }
+    });
+        
+    })
 }
 
+_p.areHeadersPresent = function( parsedHeaders ){
+    var headersExist = ["name", "location", "terminal"].every( function( header ){
+        return parsedHeaders.indexOf( header ) !== -1;
+    })
+
+    var correctNumberofHeaders = parsedHeaders.length >=3;
+
+    return headersExist && correctNumberofHeaders;
+}
+
+
+_p.onParseError = function( results ){
+    console.log("onParseError")
+}   
+
 _p.onFieldNameError = function( results ) {
-    this.onComplete("name/location/terminal are not defined as headers", results );
+    this.onComplete("name/location/terminal are not defined as headers. Headers given were:" + results.meta.fields.join("/"), results );
 }
 
 module.exports = LocationLoader;

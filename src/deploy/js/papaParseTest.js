@@ -1,5 +1,5 @@
 
-
+var result;
 function onFileSelected( event )
 {
     Papa.parse(event.target.files[0], {
@@ -11,6 +11,7 @@ function onFileSelected( event )
 }
 
 function onParseComplete( results ){
+    result = results;
     console.log( results );
 }
 
