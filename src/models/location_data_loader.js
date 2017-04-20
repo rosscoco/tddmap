@@ -1,3 +1,5 @@
+module.exports = LocationLoader;
+
 function LocationLoader( parser, onComplete, parseOptions ){
 
     var result;
@@ -22,60 +24,19 @@ _p.onFileSelected = function( event ){
 }
 
 _p.onParseComplete = function( results ){
-    console.log("onParseComplete")
-    var headers = results.meta.fields.join("");
-    var success = this.areHeadersPresent( results.meta.fields );
-    results     = this.removeInvalidResults( results );
+
+    var headers         = results.meta.fields.join("");
+    var areHeadersValid = Utils.areHeadersPresent( results.meta.fields );    
+    results             = Utils.removeInvalidResults( results );
+
+    var success         = areHeadersValid //&& other conditions TODO
 
     if ( success ){
          this.onComplete( null, results );
-    } else if (!this.areHeadersPresent( results.meta.fields)) {
+    } else if ( !areHeadersValid ) {
         this.onFieldNameError( results );
     }
 }
-
-//check for empty strings and add to error array
-_p.removeInvalidResults = function( resultsToCheck ){
-    newResults = {data:[], error:[]}
-    
-
-    function isValidData( dataObj ){
-        var isValid = true;
-        var errors = [];
-        for ( var property in dataObj ){
-            if ( dataObj.hasOwnProperty(property)){
-                if ( dataObj[property].replace(/\s/g," ").length === 0 ){
-                    errors.push(property + "is not defined.");
-                    isValid = false;
-                }
-            }
-        }
-
-        return { isValid:isValid, errors:errors.join(" ") };
-    }
-
-
-    var isValidResult;
-    resultsToCheck.data.forEach( function( result ) {
-        isValidResult = isValidData( result );
-        if ( isValidResult.isValid ){
-            data.push( result )
-        }
-    });
-        
-    })
-}
-
-_p.areHeadersPresent = function( parsedHeaders ){
-    var headersExist = ["name", "location", "terminal"].every( function( header ){
-        return parsedHeaders.indexOf( header ) !== -1;
-    })
-
-    var correctNumberofHeaders = parsedHeaders.length >=3;
-
-    return headersExist && correctNumberofHeaders;
-}
-
 
 _p.onParseError = function( results ){
     console.log("onParseError")
@@ -85,6 +46,69 @@ _p.onFieldNameError = function( results ) {
     this.onComplete("name/location/terminal are not defined as headers. Headers given were:" + results.meta.fields.join("/"), results );
 }
 
-module.exports = LocationLoader;
+var Utils = function()
+{
+    this.isEmptyString = function( s )
+    {
+        return typeof(s) === "string" && s.replace(/\s/g," ").length === 0;
+    }
+
+    this.isValidData = function ( dataObj ){
+        var isValid = true;
+        var errors = [];
+        for ( var property in dataObj ){
+            if ( dataObj.hasOwnProperty( property ) && this.isEmptyString( dataObj[ property ] )){                
+                errors.push( property + "is not defined.");
+                isValid = false;
+            }
+        }
+
+        return { isValid:isValid, errors:errors.join(" ") };
+    }
+
+    this.areHeadersPresent = function( parsedHeaders ){
+        var headersExist = ["name", "location", "terminal"].every( function( header ){
+            return parsedHeaders.indexOf( header ) !== -1;
+        })
+
+        return headersExist && parsedHeaders.length >=3;
+    }
+    
+    this.isValidTerminal = function( t ){
+        return ["Grangemouth",
+                "Kingsbury",
+                "Bramhall",
+                "IPC",
+                "Seal Sands",
+                "North Tees",
+                "Thames",
+                "West London"].indexOf(t) >=0;
+    }
+
+    //check for empty strings and add to error array
+    this.removeInvalidResults = function( resultsToCheck ){
+        
+        var validData = [];
+        var invalidData = [];
+        var isValidResult;
+
+        resultsToCheck.data.forEach( function( result ) {
+            isValidResult = this.isValidData( result );
+            if ( isValidResult.isValid && this.isValidTerminal( result.terminal ) ){
+                validData.push( result );
+            } else {
+                invalidData.push( result );
+            }
+        });
+
+        resultsToCheck.data = validData;
+        resultsToCheck.invalid = invalidData;
+
+        return resultsToCheck;
+    }
+    
+    return this;
+
+}()
 
 

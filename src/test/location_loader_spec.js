@@ -1,6 +1,7 @@
 var LocationLoader = require('../models/location_data_loader');
 var GoodParseWithHeaders = require('./helpers/csvparsing.js').getGoodParseWithHeaders;
 var GoodParseWithMissingData = require('./helpers/csvparsing.js').getGoodParseWithMissingData;
+var TestData = require('./helpers/csvparsing.js');
 var StubParser  = require('./helpers/csvparsing.js').StubParser;
 var sinon = require("sinon");
 var chai = require('chai');
@@ -103,12 +104,7 @@ describe.only("Extracts a location from the data: ", function()
     var dataToCompare;
 
     beforeEach( function() {
-        dataToCompare = {
-            "name": "rossco",
-            "location": "cm1",
-            "terminal": " Bramhall"
-        }
-
+        dataToCompare = TestData.getSingleLocationData().data[0];
         result = GoodParseWithHeaders();
     })
 
@@ -123,28 +119,28 @@ describe.only("Extracts a location from the data: ", function()
         loader.onFileSelected( fileSelectedEvent );
     })
 
-    it("adds an entry to the errors array if no name data", function(){
+    it("adds an entry to the invalid array if no name data", function(){
         
-        dataToCompare.name = "";
-
-        result = GoodParseWithMissingData();
-
-        function onComplete( err, result ){            
-            expect( result.errors ).to.include( dataToCompare )
+        result              = GoodParseWithHeaders()
+        result.data[0].name = ""
+        dataToCompare.name  = "";
+    
+        function onComplete( err, res ){            
+            expect( res.invalid ).to.include( dataToCompare );
         }
 
         var loader = new LocationLoader( new StubParser( result ), onComplete );
         loader.onFileSelected( fileSelectedEvent );
     })
 
-    it("adds the entry to the errors array if no location data", function(){
+    it("adds the entry to the invalid array if no location data", function(){
         
-        dataToCompare.location = "";
-
-        result = GoodParseWithMissingData();
+        result                  = TestData.getSingleLocationData();    
+        result.data[0].location = ""
+        dataToCompare.location  = "";
 
         function onComplete( err, result ){            
-            expect( result.errors ).to.include( dataToCompare )
+            expect( result.invalid ).to.include( dataToCompare )
         }
 
         var loader = new LocationLoader( new StubParser( result ), onComplete );
@@ -152,31 +148,33 @@ describe.only("Extracts a location from the data: ", function()
     })
 
     
-    it("adds the entry to the errors array if no terminal data", function(){
+    it("adds the entry to the invalid array if no terminal data", function(){
         
-        dataToCompare.terminal = " ";
+        result                  = TestData.getSingleLocationData();    
+        result.data[0].terminal = "";
+        dataToCompare.terminal  = "";
 
-        result = GoodParseWithMissingData();
 
         function onComplete( err, result ){            
-            expect( result.errors ).to.include( dataToCompare )
+            expect( result.invalid ).to.include( dataToCompare );
         }
 
-        var loader = new LocationLoader( new StubParser( result ), completeCb );
+        var loader = new LocationLoader( new StubParser( result ), onComplete );
         loader.onFileSelected( fileSelectedEvent );
     })
 
     it("will not parse an entry if the terminal is not on the accepted list", function(){
         
-        dataToCompare.name = "";
+        result                  = TestData.getSingleLocationData();    
+        result.data[0].terminal = "NotBramhall";
+        dataToCompare.terminal  = "NotBramhall";
 
-        result = GoodParseWithMissingData();
-
-        function onComplete( err, result ){            
-            expect( result.errors ).to.include( dataToCompare )
+        function onComplete( err, res ){            
+            
+            expect( res.invalid ).to.include( dataToCompare );
         }
 
-        var loader = new LocationLoader( new StubParser( result ), completeCb );
+        var loader = new LocationLoader( new StubParser( result ), onComplete );
         loader.onFileSelected( fileSelectedEvent );
     })
 })

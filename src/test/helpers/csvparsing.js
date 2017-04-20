@@ -34,6 +34,31 @@ module.exports.getGoodParseWithHeaders = function(){
   }
 }
 
+module.exports.getSingleLocationData = function(){
+  return {
+    "data": [
+      {
+        "name": "ross",
+        "location": "cm1 4qs",
+        "terminal": "Bramhall"
+      },
+    ],
+    "errors": [],
+    "meta": {
+      "delimiter": ",",
+      "linebreak": "\r\n",
+      "aborted": false,
+      "truncated": false,
+      "cursor": 121,
+      "fields": [
+        "name",
+        "location",
+        "terminal"
+      ]
+    }
+  }
+}
+
 module.exports.getGoodParseWithMissingData = function(){
 
   return {
