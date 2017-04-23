@@ -12,9 +12,13 @@ chai.should();
     -Loads a CSV file
         -completes with an error if file not found/loaded
     -Checks the required headers are present
-    -parses a name, location and terminal for each entry
-        -lines with these non-blank fields added to a complete array
-        -lines without these fields added to an incomplete array        
+    -parses a name, location and terminal for each entry    
+        -lines with these non-blank fields added to the data array
+        -lines without these fields added to an error array
+        -lines with these fields defined but empty to an invalid array
+
+Errors on:
+    
 
 */
 
@@ -26,32 +30,11 @@ beforeEach(function(){
     result = GoodParseWithHeaders();
 })
 
-xdescribe("Chai test Functions", function(){
-
-    it ("checks an array for the presence of an object", function(){
-    var result = {
-        "name": "site name",
-        "location": "",
-        "terminal": "Bramhall"
-        }
-
-        var arr = [];
-        arr.push(result)
-
-        expect(arr).to.include({
-        "name": "site name",
-        "location": "",
-        "terminal": "Bramhall"
-        });
-    })
-})
-
 describe("Checking CSV field names", function(){
         
     function detectErrorCB ( err, results ) {
         expect( err ).to.not.be.null;
     }
-
 
     beforeEach( function() {
         result = GoodParseWithHeaders();
@@ -99,7 +82,7 @@ describe("Checking CSV field names", function(){
     })
 })
 
-describe.only("Extracts a location from the data: ", function()
+describe("Extracts a location from the data: ", function()
 {
     var dataToCompare;
 
@@ -176,17 +159,6 @@ describe.only("Extracts a location from the data: ", function()
 
         var loader = new LocationLoader( new StubParser( result ), onComplete );
         loader.onFileSelected( fileSelectedEvent );
-    })
-})
-
-describe("Returns multiple entries", function(){
-
-    it("Completes with a list of successful loads", function(){
-
-    })
-
-    it("Completes with a list of unsuccessful loads", function(){
-
     })
 })
 
