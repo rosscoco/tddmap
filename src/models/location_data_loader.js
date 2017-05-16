@@ -25,7 +25,6 @@ _p.onFileSelected = function( event ){
 }
 
 _p.onParseComplete = function( results ){
-    console.lo
     var headers         = results.meta.fields.join("");
     var areHeadersValid = Utils.areHeadersPresent( results.meta.fields );    
     results             = Utils.removeInvalidResults( results );

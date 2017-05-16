@@ -57,7 +57,7 @@ exports.singleValidGeocodeResponse = [{
       },
       "location":{  
          "lat":function(){ return 51.80835159999999},
-         "lon":function(){ return 0.35142659999996795 }
+         "lng":function(){ return 0.35142659999996795 }
       },
       "location_type":"APPROXIMATE",
       "viewport":{  

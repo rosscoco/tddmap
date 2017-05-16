@@ -18,6 +18,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "launch": "node buildScripts/runServer.js",
     "clean": "rimraf deploy/*",
+    "geocode:test": "mocha src/test/location_finder_spec.js",
     "geocode:bundle": "browserify sandbox/geocode-from-csv/index.js > sandbox/geocode-from-csv/js/app.js",
     "geocode:copy": "cpx sandbox/geocode-from-csv/**/*.{js,csv,html} deploy && cpx src/**/*.js deploy && cpx lib/**/*.js deploy/lib",
     "geocode:build": "npm run clean && npm run geocode:bundle && npm run geocode:copy"

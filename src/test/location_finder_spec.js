@@ -11,7 +11,7 @@ describe('Batch Location Finder', function(){
             this.geocode = function(){};
         } 
         
-        var geocoder;
+        var geocoder; 
         var batchGeocoder;
 
         describe("Is Successful if...", function(){
@@ -121,10 +121,14 @@ describe('Batch Location Finder', function(){
                     settings = { geocodeInterval:delay, rateIncrease:rateIncrease };
                 })
 
+                xit("handles a result of null to the geocode callback", function(done){
+
+                })
+
                 it("delays the next if OVER_QUERY_LIMIT received", function(done){
                     
-                    stub.onCall(0).yields( [],"OVER_QUERY_LIMIT" );
-                    stub.onCall(1).yields(helpers.singleValidGeocodeResponse,"OK");                    
+                    stub.onCall(0).yields( null,"OVER_QUERY_LIMIT" );
+                    stub.onCall(1).yields(helpers.singleValidGeocodeResponse,"OK");
 
                     function onComplete( status, results ){
                         var endTime = new Date().getTime();
@@ -139,10 +143,10 @@ describe('Batch Location Finder', function(){
                 it("increments the geocode interval for each subsequent OVER_QUERY_LIMIT received", function(done){
 
                     stub.onCall(0).yields(helpers.singleValidGeocodeResponse,"OK");
-                    stub.onCall(1).yields( [],"OVER_QUERY_LIMIT" );
-                    stub.onCall(2).yields( [],"OVER_QUERY_LIMIT" );
-                    stub.onCall(3).yields( [],"OVER_QUERY_LIMIT" );
-                    stub.onCall(4).yields( [],"OVER_QUERY_LIMIT" );
+                    stub.onCall(1).yields( null,"OVER_QUERY_LIMIT" );
+                    stub.onCall(2).yields( null,"OVER_QUERY_LIMIT" );
+                    stub.onCall(3).yields( null,"OVER_QUERY_LIMIT" );
+                    stub.onCall(4).yields( null,"OVER_QUERY_LIMIT" );
                     
                     function onComplete( status, results ){
                         var endTime = new Date().getTime();

@@ -25,39 +25,47 @@ function BatchGeocoder( tofind, geocoder, onComplete, settings ){
 var _p = BatchGeocoder.prototype;
 
 _p.getLocationData = function( toFind ){       
+    
     var batcher = this;
-    var lookingFor = toFind;
 
-    this.geocoder.geocode( { address:toFind }, function( result, status ){
-        result.location = lookingFor;
-        batcher.onGeocodeResponse( result, status );
-    });
+    var onComplete = function(){
+
+        var lookingFor = toFind;
+        
+
+        return function( result, status){
+            batcher.onGeocodeResponse( lookingFor, result, status );
+        }
+    }();
+
+
+    this.geocoder.geocode( { address:toFind }, onComplete );
 }
 
-_p.onGeocodeResponse = function( result, status ){
+_p.onGeocodeResponse = function( locationSearched, result, status  ){
 
-    if ( this.logger ) { this.logger("Geocoder:" + result, status )};
+    if ( this.logger ) { this.logger("Geocoder:" + locationSearched, result, status )};
 
     switch( status )
     {
         case "OK":                  if ( result.length === 1 ){
-                                        this.onLocationFound({  location:result.location,
+                                        this.onLocationFound({  location:locationSearched,
                                                                 full_address:result[0].formatted_address,
                                                                 lat: result[0].geometry.location.lat(),
                                                                 lon: result[0].geometry.location.lng() });
                                     } else {
-                                        this.onLocationNotFound( { msg:"Address must resolve to single location", address: result.location } );
+                                        this.onLocationNotFound( { msg:"Address must resolve to single location", location: result.location } );
                                     }
                                     break;
         case "UNKNOWN_ERROR":
-        case "OVER_QUERY_LIMIT":    this.retry.push( result.location );     
+        case "OVER_QUERY_LIMIT":    this.retry.push( locationSearched ); 
                                     this.geocodeInterval += this.rateIncrease;
-                                    this.onLocationNotFound({ msg:"Over query limit/Server Error. Will retry.", address:result.location });
+                                    this.onLocationNotFound({ msg:"Over query limit/Server Error. Will retry.", location:locationSearched });
                                     break
         case "REQUEST_DENIED":
         case "INVALID_REQUEST":
         case "ZERO RESULTS":        
-        default:                    this.onLocationNotFound({msg:"Location Not Found", address:result.location });
+        default:                    this.onLocationNotFound({msg:"Location Not Found", location:locationSearched });
                                     break;
     }
 }
@@ -93,7 +101,7 @@ _p.checkQueueForNextLocation = function(){
             this.getLocationData( location );
         }
     } else if ( this.onComplete ){
-            this.onComplete( {success:this.success, retry:this.retry, errors:this.errors });
+            this.onComplete( { success:this.success, retry:this.retry, errors:this.errors });
     }
 }
 

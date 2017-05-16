@@ -14,15 +14,15 @@ extractData();
 function extractData( fromDataArr ){
     var maxEntries = Number(process.argv[2])
 
-    var fileData = JSON.parse(fs.readFileSync(path.join(__dirname, "sites.json")));
+    var fileData = JSON.parse(fs.readFileSync(path.join(__dirname, "data","sites.json")));
     var newDataArr = fileData.postalCodes.map( objToCSV );    
     newDataArr.unshift("name,postcode,terminal");
     
-    if ( typeof(maxEntries) === 'number' && newDataArr.length > maxEntries + 1){
-        newDataArr.splice(maxEntries + 1);
+    if ( typeof( maxEntries ) === 'number' && newDataArr.length > maxEntries + 1){
+        newDataArr.splice( maxEntries + 1 );
     }
 
-    fs.writeFileSync(path.join(__dirname,"parsedSites.csv"), newDataArr.join('\n'));
+    fs.writeFileSync(path.join(__dirname,"data","parsedSites.csv"), newDataArr.join('\r\n'));
 
     function objToCSV( fromObj ) {
         return getSiteName() + ',' + fromObj.postalCode + ',' + getRandomTerminal();
@@ -40,6 +40,6 @@ function getRandomTerminal()
                         "Thames",
                         "West London"]
 
-    return terminals[Math.floor(Math.random()*terminals.length)];
+    return terminals[ Math.floor( Math.random()* terminals.length )];
 }
 
