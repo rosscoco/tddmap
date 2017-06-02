@@ -24,6 +24,25 @@ function BatchGeocoder( tofind, geocoder, onComplete, settings ){
 
 var _p = BatchGeocoder.prototype;
 
+_p.start = function(){
+     this.checkQueueForNextLocation();
+}
+
+_p.checkQueueForNextLocation = function(){
+    
+    var location = this.locations.pop();
+    var getNextLocation = this.getLocationData.bind( this, location );
+    
+    if ( location !== undefined ){
+        setTimeout( getNextLocation, this.geocodeInterval );
+    } else {
+        this.onComplete( { success:this.success, retry:this.retry, errors:this.errors });
+    }
+}
+
+
+//wrapper function for calling Google.Maps.geocoder.geocode
+//Provide a single location to search for ( postcode, street address )
 _p.getLocationData = function( toFind ){       
     
     var batcher = this;
@@ -32,16 +51,15 @@ _p.getLocationData = function( toFind ){
 
         var lookingFor = toFind;
         
-
         return function( result, status){
             batcher.onGeocodeResponse( lookingFor, result, status );
         }
     }();
 
-
     this.geocoder.geocode( { address:toFind }, onComplete );
 }
 
+//Callback for Google.Maps.geocoder.geocode
 _p.onGeocodeResponse = function( locationSearched, result, status  ){
 
     if ( this.logger ) { this.logger("Geocoder:" + locationSearched, result, status )};
@@ -65,7 +83,7 @@ _p.onGeocodeResponse = function( locationSearched, result, status  ){
         case "REQUEST_DENIED":
         case "INVALID_REQUEST":
         case "ZERO RESULTS":        
-        default:                    this.onLocationNotFound({msg:"Location Not Found", location:locationSearched });
+        default:                    this.onLocationNotFound( {msg:"Location Not Found", location:locationSearched });
                                     break;
     }
 }
@@ -82,28 +100,8 @@ _p.onLocationFound = function( locationObj )
      this.checkQueueForNextLocation();
 }
 
-_p.start = function(){
-     this.checkQueueForNextLocation();
-}
 
-_p.checkQueueForNextLocation = function(){
 
-    var location = this.locations.pop();
-//    console.log(this.geocodeInterval);
-    if ( location !== undefined ){
-        if ( this.geocodeInterval > 0 ) {
-            var geocoder = this;
-            
-            setTimeout( function(){
-                geocoder.getLocationData( location );    
-            }, this.geocodeInterval );
-        } else {
-            this.getLocationData( location );
-        }
-    } else if ( this.onComplete ){
-            this.onComplete( { success:this.success, retry:this.retry, errors:this.errors });
-    }
-}
 
 
 module.exports = BatchGeocoder;

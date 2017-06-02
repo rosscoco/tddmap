@@ -69,22 +69,25 @@ describe('Batch Location Finder', function(){
             });
 
 
-            it("does not receive a response for every provided location", function()
+            it("does not receive a response for every provided location", function(done)
             {
                 var locations = [];
                 for ( var i = 0; i < 10 ; i++ ) {
                     locations.push( helpers.singleValidGeocodeResponse )
                 }
 
-                batchGeocoder = new LocationFinder( locations, geocoder, function(){} );
+                batchGeocoder = new LocationFinder( locations, geocoder, function(){
+                    assert( batchGeocoder.getLocationData.called )
+                    assert( batchGeocoder.onGeocodeResponse.callCount === 10 );
+                    done();
+                });
 
                 sinon.spy(batchGeocoder, "onGeocodeResponse");
                 sinon.spy(batchGeocoder, "getLocationData");
 
                 batchGeocoder.start();
                 
-                assert( batchGeocoder.getLocationData.called )
-                assert( batchGeocoder.onGeocodeResponse.callCount === 10 );
+                
             })
         })
 
@@ -119,10 +122,6 @@ describe('Batch Location Finder', function(){
                     rateIncrease = 1;
                     startTime = new Date().getTime();
                     settings = { geocodeInterval:delay, rateIncrease:rateIncrease };
-                })
-
-                xit("handles a result of null to the geocode callback", function(done){
-
                 })
 
                 it("delays the next if OVER_QUERY_LIMIT received", function(done){
