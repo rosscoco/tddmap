@@ -40,10 +40,10 @@ describe('Batch Location Finder', function(){
 
                     var onComplete = function(){
                         
-                        var calledWith = batchGeocoder.onLocationFound.getCall(0).args[ 0 ];
+                        var calledWith = batchGeocoder.onLocationParsed.getCall(0).args[ 1 ];
                         
                         assert.deepEqual( calledWith, helpers.parsedValidResponse );
-                        assert( batchGeocoder.onLocationFound.called );
+                        assert( batchGeocoder.onLocationParsed.called );
                         assert( batchGeocoder.success.length === 1 );
                         
                         done();
@@ -51,7 +51,7 @@ describe('Batch Location Finder', function(){
 
                     batchGeocoder   = new LocationFinder( 'CM1 4QS', geocoder, onComplete );
 
-                    sinon.spy( batchGeocoder,'onLocationFound' );
+                    sinon.spy( batchGeocoder,'onLocationParsed' );
                     sinon.stub( geocoder,'geocode').yields( helpers.singleValidGeocodeResponse,"OK");
 
                     batchGeocoder.start();

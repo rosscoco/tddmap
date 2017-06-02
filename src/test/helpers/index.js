@@ -74,8 +74,10 @@ exports.singleValidGeocodeResponse = [{
 }]
 
 exports.parsedValidResponse = {
-    location:"CM1 4QS",
+    locationId:"CM1 4QS",
+    status:"OK",
+    msg:"Location Found",
     full_address: "High Easter, Chelmsford CM1 4QS, UK",
     lat: 51.80835159999999,
-    lon: 0.35142659999996795 
+    lng: 0.35142659999996795 
 };
