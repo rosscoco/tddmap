@@ -36,6 +36,5 @@ var LocationLoader = require("../../src/models/location_data_loader");
 
     function onLocationsLoaded(err, results){
         console.log("Locations Loaded " + results );
-
     }
 })()

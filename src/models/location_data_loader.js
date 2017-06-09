@@ -43,7 +43,7 @@ _p.onParseError = function( results ){
 }   
 
 _p.onFieldNameError = function( results ) {
-    this.onComplete("name/location/terminal are not defined as headers. Headers given were:" + results.meta.fields.join("/"), results );
+    this.onComplete("name/address/terminal are not defined as headers. Headers given were:" + results.meta.fields.join("/"), results );
 }
 
 var Utils = function()
@@ -67,7 +67,7 @@ var Utils = function()
     }
 
     this.areHeadersPresent = function( parsedHeaders ){
-        var headersExist = ["name", "location", "terminal"].every( function( header ){
+        var headersExist = ["name", "address", "terminal"].every( function( header ){
             return parsedHeaders.indexOf( header ) !== -1;
         })
 

@@ -21,7 +21,10 @@
     "geocode:test": "mocha src/test/location_finder_spec.js",
     "geocode:bundle": "browserify sandbox/geocode-from-csv/index.js > sandbox/geocode-from-csv/js/app.js",
     "geocode:copy": "cpx sandbox/geocode-from-csv/**/*.{js,csv,html} deploy && cpx src/**/*.js deploy && cpx lib/**/*.js deploy/lib",
-    "geocode:build": "npm run clean && npm run geocode:bundle && npm run geocode:copy"
+    "geocode:build": "npm run clean && npm run geocode:bundle && npm run geocode:copy",
+    "tableview:bundle":"browserify sandbox/sitetableview/js/app.js > sandbox/sitetableview/deploy/app.js",
+    "tableview:copy": "cpx sandbox/sitetableview/deploy/**/*.{js,csv,html,css} deploy && cpx src/**/*.js deploy",
+    "tableview:build": "npm run clean && npm run tableview:bundle && npm run tableview:copy"
   },
   "repository": {
     "type": "git",

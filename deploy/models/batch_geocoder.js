@@ -24,79 +24,89 @@ function BatchGeocoder( tofind, geocoder, onComplete, settings ){
 
 var _p = BatchGeocoder.prototype;
 
-_p.getLocationData = function( toFind ){       
-    var batcher = this;
-    var lookingFor = toFind;
-
-    this.geocoder.geocode( { address:toFind }, function( result, status ){
-        result.location = lookingFor;
-        batcher.onGeocodeResponse( result, status );
-    });
-}
-
-_p.onGeocodeResponse = function( result, status ){
-
-    if ( this.logger ) { this.logger("Geocoder:" + result, status )};
-
-    switch( status )
-    {
-        case "OK":                  if ( result.length === 1 ){
-                                        this.onLocationFound({  location:result.location,
-                                                                full_address:result[0].formatted_address,
-                                                                lat: result[0].geometry.location.lat(),
-                                                                lon: result[0].geometry.location.lng() });
-                                    } else {
-                                        this.onLocationNotFound( { msg:"Address must resolve to single location", address: result.location } );
-                                    }
-                                    break;
-        case "UNKNOWN_ERROR":
-        case "OVER_QUERY_LIMIT":    this.retry.push( result.location );     
-                                    this.geocodeInterval += this.rateIncrease;
-                                    this.onLocationNotFound({ msg:"Over query limit/Server Error. Will retry.", address:result.location });
-                                    break
-        case "REQUEST_DENIED":
-        case "INVALID_REQUEST":
-        case "ZERO RESULTS":        
-        default:                    this.onLocationNotFound({msg:"Location Not Found", address:result.location });
-                                    break;
-    }
-}
-
-_p.onLocationNotFound = function( err, result )
-{
-     this.errors.push( err );
-     this.checkQueueForNextLocation();
-}
-
-_p.onLocationFound = function( locationObj )
-{
-     this.success.push( locationObj );
-     this.checkQueueForNextLocation();
-}
-
 _p.start = function(){
      this.checkQueueForNextLocation();
 }
 
 _p.checkQueueForNextLocation = function(){
-
+    
     var location = this.locations.pop();
-//    console.log(this.geocodeInterval);
+    var getNextLocation = this.getLocationData.bind( this, location );
+    
     if ( location !== undefined ){
-        if ( this.geocodeInterval > 0 ) {
-            var geocoder = this;
-            
-            setTimeout( function(){
-                geocoder.getLocationData( location );    
-            }, this.geocodeInterval );
-        } else {
-            this.getLocationData( location );
-        }
-    } else if ( this.onComplete ){
-            this.onComplete( {success:this.success, retry:this.retry, errors:this.errors });
+        setTimeout( getNextLocation, this.geocodeInterval );
+    } else {
+        this.onComplete( { success:this.success, retry:this.retry, errors:this.errors });
     }
 }
 
+
+//wrapper function for calling Google.Maps.geocoder.geocode
+//Provide a single location to search for ( postcode, street address )
+_p.getLocationData = function( toFind ){       
+    
+    var batcher = this;
+
+    var onComplete = function(){
+
+        var lookingFor = toFind;
+        
+        return function( result, status){
+            batcher.onGeocodeResponse( lookingFor, result, status );
+        }
+    }();
+
+    this.geocoder.geocode( { address:toFind }, onComplete );
+}
+
+//Callback for Google.Maps.geocoder.geocode
+_p.onGeocodeResponse = function( locationId, geocodedData, status  ){
+
+    if ( this.logger ) { this.logger("Geocoder:" + locationId, geocodedData, status )};
+
+    var result = { locationId:locationId, status:status,msg:"" };
+
+    switch( status )
+    {
+        case "OK":                  if ( geocodedData.length === 1 ){
+                                        result.lat = geocodedData[0].geometry.location.lat()
+                                        result.lng =  geocodedData[0].geometry.location.lng();
+                                        result.full_address = geocodedData[0].formatted_address;
+                                        result.msg = "Location Found";
+                                        this.onLocationParsed( null, result );
+                                    } else {
+                                        result.msg = "Multiple locations found for address."
+                                        this.onLocationParsed( new Error("Multiple locations found for address."), result );
+                                    }
+                                    break;
+        case "UNKNOWN_ERROR":
+        case "OVER_QUERY_LIMIT":    this.retry.push( locationId ); 
+                                    this.geocodeInterval += this.rateIncrease;
+                                    result.msg = "Over query limit/Server Error. Will retry."
+                                    this.onLocationParsed(new Error("Over query limit/Server Error. Will retry."), result );
+                                    break
+        case "REQUEST_DENIED":
+        case "INVALID_REQUEST":
+        case "ZERO RESULTS":        
+        default:                    result.msg = "Not Found!";
+                                    this.onLocationParsed( new Error("Location Not Found"), result );
+                                    break;
+    }
+}
+
+_p.onLocationParsed= function ( err, result )
+{
+    if ( err )
+    {
+        this.errors.push( result );
+    }
+    else
+    {
+        this.success.push( result );
+    }
+
+    this.checkQueueForNextLocation();
+}
 
 module.exports = BatchGeocoder;
 
