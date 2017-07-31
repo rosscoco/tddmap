@@ -8,7 +8,9 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>Site Table View Test</title>
         <meta name="description" content="">
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600|Lora' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="./css/bootstrap.css">
+        <link rel="stylesheet" href="./css/table_view.css">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <script src="app.js"></script>
     </head>
@@ -16,22 +18,48 @@
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-        <h2>Select site data .csv to load</h2>
-        <input id="file-input" type="file" accept=".txt,.csv">
-        <div class="table-holder">
-            <table class="table table-striped table-inverse table-bordered table-hover" id="site-table-view">
-                <thead class="thead-inverse">
-                    <tr>
-                        <th>Name</th>
-                        <th>Address</th>
-                        <th>Terminal</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                </tbody>
-            </table>
+        
+        <div class="page">
+            <h2>Select site data .csv to load</h2>
+            <input id="file-input" type="file" accept=".txt,.csv">
+            <div class="table-holder">
+                <table class="table table-striped" id="site-table-view">
+                    <thead class="thead-inverse">
+                        <tr>
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>Terminal</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Site 1</td>
+                            <td>12 nowhere</td>
+                            <td>Bramhall</td>
+                            <td class="status_pending"></td>
+                        </tr>
+                        <tr>
+                            <td>Site 1</td>
+                            <td>12 nowhere</td>
+                            <td>Bramhall</td>
+                            <td class="status_pending"></td>
+                        </tr>
+                        <tr>
+                            <td>Site 1</td>
+                            <td>12 nowhere</td>
+                            <td>Bramhall</td>
+                            <td class="status_pending"></td>
+                        </tr>
+                        <tr>
+                            <td>Site 1</td>
+                            <td>12 nowhere</td>
+                            <td>Bramhall</td>
+                            <td class="status_pending"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </body>
 </html>

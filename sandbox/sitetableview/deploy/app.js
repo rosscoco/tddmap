@@ -10,14 +10,13 @@ var LocationLoader = require("../../../src/models/location_data_loader.js/");
     window.onload = function(){
         
         var fileInput = document.getElementById("file-input");
-        var locationLoader = new LocationLoader( PapaParse.parse, onLocationsLoaded )
+        var locationLoader = new LocationLoader( PapaParse.parse, onLocationsLoaded );
         
         console.log( "ready", fileInput );
 
         fileInput.onchange = function( event ){
             locationLoader.onFileSelected( event );
         }
-
 
         function onLocationsGeocoded(err, results){
             

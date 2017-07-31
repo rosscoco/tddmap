@@ -1,0 +1,27 @@
+body
+{
+	background-color:#282828;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 11px;
+	font-weight:300;
+}
+
+.page{
+    width:800px;
+    margin:20px auto;
+}
+
+.button
+{
+	box-sizing:border-box;
+	background: #CCCCCC;
+	color:#111111;
+	box-shadow: inset 0px 0px 0px 3px #282828;
+	border:1px solid #EEEEEE;
+	width:60px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 16px;
+}
+
