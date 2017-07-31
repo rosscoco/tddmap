@@ -1,7 +1,7 @@
 var assert = require('assert');
 var sinon = require('sinon');
-var LocationFinder = require('../models/batch_geocoder');
-var helpers = require('./helpers');
+var BatchGeocoder = require('./batch_geocoder');
+var helpers = require('../helper/geocoding_responses');
 
 describe('Batch Location Finder', function(){
 
@@ -9,7 +9,7 @@ describe('Batch Location Finder', function(){
        
        function GeocoderStub(){
             this.geocode = function(){};
-        } 
+        }
         
         var geocoder; 
         var batchGeocoder;
@@ -20,11 +20,11 @@ describe('Batch Location Finder', function(){
 
                 beforeEach( function(){
                     geocoder = new GeocoderStub();
-                    batchGeocoder   = new LocationFinder( 'CM1 4QS', geocoder, function(){} );                
+                    batchGeocoder   = new BatchGeocoder( 'CM1 4QS', geocoder, function(){} );                
                 })
 
                 it("should async call onGeocodeResponse with the found location", function(done){
-                    batchGeocoder   = new LocationFinder( 'CM1 4QS', geocoder, function(){
+                    batchGeocoder   = new BatchGeocoder( 'CM1 4QS', geocoder, function(){
                         console.log("calling done");
                         assert( batchGeocoder.onGeocodeResponse.called );
                         done();
@@ -49,7 +49,7 @@ describe('Batch Location Finder', function(){
                         done();
                     };
 
-                    batchGeocoder   = new LocationFinder( 'CM1 4QS', geocoder, onComplete );
+                    batchGeocoder   = new BatchGeocoder( 'CM1 4QS', geocoder, onComplete );
 
                     sinon.spy( batchGeocoder,'onLocationParsed' );
                     sinon.stub( geocoder,'geocode').yields( helpers.singleValidGeocodeResponse,"OK");
@@ -76,7 +76,7 @@ describe('Batch Location Finder', function(){
                     locations.push( helpers.singleValidGeocodeResponse )
                 }
 
-                batchGeocoder = new LocationFinder( locations, geocoder, function(){
+                batchGeocoder = new BatchGeocoder( locations, geocoder, function(){
                     assert( batchGeocoder.getLocationData.called )
                     assert( batchGeocoder.onGeocodeResponse.callCount === 10 );
                     done();
@@ -109,7 +109,7 @@ describe('Batch Location Finder', function(){
                     assert( results.errors[ 1 ].address === location1.address );
                 }; 
 
-                batchGeocoder   = new LocationFinder( [ location1.address,location2.address ], geocoder, onComplete );
+                batchGeocoder   = new BatchGeocoder( [ location1.address,location2.address ], geocoder, onComplete );
             })
 
             describe("Should handle rate limited responses",function(){
@@ -135,7 +135,7 @@ describe('Batch Location Finder', function(){
                         done();
                     }
                     
-                    batchGeocoder   = new LocationFinder( [ "abc","def" ], geocoder, onComplete, settings );
+                    batchGeocoder   = new BatchGeocoder( [ "abc","def" ], geocoder, onComplete, settings );
                     batchGeocoder.start();
                 })
 
@@ -156,7 +156,7 @@ describe('Batch Location Finder', function(){
                     var startTime   = new Date().getTime();
                     settings.geocodeInterval = 0;
                     settings.rateIncrease = 10;
-                    batchGeocoder   = new LocationFinder( [ "abc","def","abc","def","abc" ], geocoder, onComplete, settings );
+                    batchGeocoder   = new BatchGeocoder( [ "abc","def","abc","def","abc" ], geocoder, onComplete, settings );
                     batchGeocoder.start();
                 })
             })

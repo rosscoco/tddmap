@@ -14,7 +14,7 @@
                 "runtimeExecutable": "mocha.cmd"
             },
             "runtimeArgs": [
-                "src/test/location_finder_spec.js"
+                "src/model/location_csv_loader_spec.js"
             ],
             "console": "integratedTerminal"
         }

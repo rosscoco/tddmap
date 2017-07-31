@@ -1,6 +1,6 @@
-module.exports = LocationLoader;
+module.exports = LocationLoaderFromFile;
 
-function LocationLoader( parseFunction, onComplete, parseOptions ){
+function LocationLoaderFromFile( parseFunction, onComplete, parseOptions ){
 
     var result;
     this.file           = "No File Selected";
@@ -15,10 +15,9 @@ function LocationLoader( parseFunction, onComplete, parseOptions ){
     this.onComplete     = onComplete;
 }
 
-var _p = LocationLoader.prototype;
+var _p = LocationLoaderFromFile.prototype;
 
 _p.onFileSelected = function( event ){
-    console.log("on file selected");
     var input = event.target;
     this.file = input.files[ 0 ];
     this.parse( this.file, this.parseOptions );
@@ -67,7 +66,7 @@ var Utils = function()
     }
 
     this.areHeadersPresent = function( parsedHeaders ){
-        var headersExist = ["name", "address", "terminal"].every( function( header ){
+        var headersExist = ["name", "location", "terminal"].every( function( header ){
             return parsedHeaders.indexOf( header ) !== -1;
         })
 

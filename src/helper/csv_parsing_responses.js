@@ -98,7 +98,7 @@ module.exports.getGoodParseWithMissingData = function(){
 module.exports.StubParser = function StubParser( resultData )
 {
     var result = resultData;
-    this.parse = function( file, args )
+    return function( file, args )
     {
         args.complete( result );
     }

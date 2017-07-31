@@ -1,8 +1,6 @@
-var LocationLoader = require('../models/location_data_loader');
-var GoodParseWithHeaders = require('./helpers/csvparsing.js').getGoodParseWithHeaders;
-var GoodParseWithMissingData = require('./helpers/csvparsing.js').getGoodParseWithMissingData;
-var TestData = require('./helpers/csvparsing.js');
-var StubParser  = require('./helpers/csvparsing.js').StubParser;
+var LocationLoader = require('./location_csv_loader');
+var parseHelper = require('../helper/csv_parsing_responses');
+var StubParser  = require('../helper/csv_parsing_responses').StubParser;
 var sinon = require("sinon");
 var chai = require('chai');
 var expect = chai.expect;
@@ -27,7 +25,7 @@ var fileSelectedEvent, loader, result;
 
 beforeEach(function(){
     fileSelectedEvent   = { target: { files:["file.txt"] } };
-    result = GoodParseWithHeaders();
+    result =parseHelper.getGoodParseWithHeaders();
 })
 
 describe("Checking CSV field names", function(){
@@ -37,7 +35,7 @@ describe("Checking CSV field names", function(){
     }
 
     beforeEach( function() {
-        result = GoodParseWithHeaders();
+        result = parseHelper.getGoodParseWithHeaders();
     })
 
     it("completes with error if not three headers present", function(){
@@ -48,10 +46,10 @@ describe("Checking CSV field names", function(){
         loader.onFileSelected( fileSelectedEvent );
     })
 
-    it("expects name, address, and terminal to be defined as header fields", function(){
+    it("expects name, location, and terminal to be defined as header fields", function(){
         function onComplete( err, results ) {
             expect( err ).to.be.null;
-            expect( result.meta.fields ).to.include("name","address","terminal");
+            expect( result.meta.fields ).to.include("name","location","terminal");
         }
 
         //result = Helpers.getGoodParseWithHeaders();
@@ -87,15 +85,15 @@ describe("Extracts a location from the data: ", function()
     var dataToCompare;
 
     beforeEach( function() {
-        dataToCompare = TestData.getSingleLocationData().data[0];
-        result = GoodParseWithHeaders();
+        dataToCompare = parseHelper.getSingleLocationData().data[0];
+        result =  parseHelper.getGoodParseWithHeaders();
     })
 
-    it("expects an entry to have name, address and terminal fields", function(){
+    it("expects an entry to have name, location and terminal fields", function(){
         
         function onComplete( err, result ){
             expect( err ).to.be.null;     
-            expect( result.data[ 0 ] ).to.contain.all.keys("name","address","terminal");
+            expect( result.data[ 0 ] ).to.contain.all.keys("name","location","terminal");
         }
 
         var loader = new LocationLoader( new StubParser( result ), onComplete );
@@ -104,7 +102,7 @@ describe("Extracts a location from the data: ", function()
 
     it("adds an entry to the invalid array if no name data", function(){
         
-        result              = GoodParseWithHeaders()
+        result              =  parseHelper.getGoodParseWithHeaders()
         result.data[0].name = ""
         dataToCompare.name  = "";
     
@@ -118,7 +116,7 @@ describe("Extracts a location from the data: ", function()
 
     it("adds the entry to the invalid array if no location data", function(){
         
-        result                  = TestData.getSingleLocationData();    
+        result                  = parseHelper.getSingleLocationData();    
         result.data[0].location = ""
         dataToCompare.location  = "";
 
@@ -133,7 +131,7 @@ describe("Extracts a location from the data: ", function()
     
     it("adds the entry to the invalid array if no terminal data", function(){
         
-        result                  = TestData.getSingleLocationData();    
+        result                  = parseHelper.getSingleLocationData();    
         result.data[0].terminal = "";
         dataToCompare.terminal  = "";
 
@@ -148,7 +146,7 @@ describe("Extracts a location from the data: ", function()
 
     it("will not parse an entry if the terminal is not on the accepted list", function(){
         
-        result                  = TestData.getSingleLocationData();    
+        result                  = parseHelper.getSingleLocationData();    
         result.data[0].terminal = "NotBramhall";
         dataToCompare.terminal  = "NotBramhall";
 
