@@ -14,17 +14,43 @@
 //getInvalidSiteData()
     //returns an array of sites without any of name, location, terminal, geodata properties set.
 
-function SiteTableView( tableElement ) {
-
+function SiteTableView( tableNode) {
+    if ( tableNode && tableNode.nodeType && tableNode.nodeType === 1 && tableNode.nodeName === "TABLE" ){
+        this.tableElement = tableNode;
+    } else {
+        throw new IllegalArgumentError("SiteTableView instantaited without a <table>");
+    }
 }
 
-function updateSiteList( fromArr ) {
-    
+var _p = SiteTableView.prototype;
+
+_p.initView = function( table_node ){
+    this.html = table_node;
 }
 
-function updateSite( siteObj ) {
+_p.update = function( withData ) {
+    if ( withData &&
+         withData.hasOwnPropery('name') &&
+         withData.hasOwnPropery('terminal') && 
+         withData.hasOwnPropery('location')) {
+            
+        // var tableRow = doesRowExist( withData )
 
+        // if ( !tableRow ) {
+        //     addNewRow( withData );
+        // }
+
+        //  updateRowData( withData )
+
+         return { success:true, msg:withData.name + "updated!" };
+
+    } else {
+        return { success:false,msg:"Name/Location/Terminal not defined" };
+    }
 }
 
+_p.
 
+
+module.exports = SiteTableView;
 

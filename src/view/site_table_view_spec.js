@@ -1,79 +1,81 @@
-var assert = require('assert');
+var chai = require('chai');
+var expect = chai.expect;
 var sinon = require('sinon');
-var SiteTableView = require('../view/site_table_view.js');
-var jsdom = require("node-jsdom");
-var tablehtml = `<div class="table-holder">
-                    <table class="table table-striped table-inverse table-bordered table-hover" id="site-table-view">
-                        <thead class="thead-inverse">
-                            <tr>
-                                <th>Name</th>
-                                <th>Address</th>
-                                <th>Terminal</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                        </tbody>
-                    </table>
-                </div>`
-
-describe("SiteData Table View tests...", function(){
-
-    before( function(){
-        jsdom.env(  tablehtml,
-                    function (errors, window) {
-                        console.log("JSDOM init error:" + errors);
-                     })
-    });
+var SiteTableView = require('./site_table_view.js');
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+var Helpers = require("../helper/site_table_view_data.js")
 
     describe("Initialisation...", function(){
         
-        describe("constructor creates table dom element if not present", function(){
+        var mock_window;
+        var table_node;
+        var view;
+        var DOM;
+        beforeEach( function(){
+            DOM = new JSDOM(Helpers.getTableHTML());
+            table_node = DOM.window.document.getElementById("site-table-view");
+            mock_window = DOM.window;
+        });
 
-        })
+        it("throws an error if nothing is provided", function(){
 
-        describe("does not cause runtime error if not provided with DOM", function()
-        {
+            expect( function(){
+                new SiteTableView( null, { window:mock_window });
+            }).to.throw();
+        });
 
+        it("throws an error if an html node is not provided", function(){
+
+            expect( function(){
+                new SiteTableView( {}, { window:mock_window, $:window.jQuery });
+            }).to.throw();
+        });
+
+        it("throws an error if not provided a table", function(){
+
+            var fake_node = mock_window.document.createElement("div");
+            mock_window.document.body.appendChild(fake_node);
+
+            expect( function(){
+                new SiteTableView( fake_node, { window:mock_window  });
+            }).to.throw();
+        });
+
+        it("instantiates if given <table> node", function(){
+            var view = new SiteTableView(table_node);
+            expect(view).to.be.instanceOf( SiteTableView );
         })
     })
 
-    describe("Update site data..", function(){
+   describe("Update site data..", function(){
+
+        beforeEach( function(){
+            DOM = new JSDOM( Helpers.getTableHTML() );
+            table_node = DOM.window.document.getElementById("site-table-view");
+            mock_window = DOM.window;
+            view = new SiteTableView( table_node );
+        });
+
+        it("returns false if name/location/terminal are not valid", function(){
+            var data = {name:"", location:"", terminal:"" }
+            expect( view.update( data ) ).to.be.false();
+        })  
         
-        it(" addSites( arr ) adds a row to the table for every entry in an array", function(){
 
-        })
+        it("update() adds a row for every entry provided in an array")
 
-        it("updateSite( siteData ) amends the site data for a given site", function(){
+        it("update() does not add a row if the data lacks name, site")
 
-        })
+        it("update() adds a single row if not provided an array")
 
-        it("updateSite() does not error if site does not exist", function(){
+        it("update() does not add a new row if the site data exists")
 
-        })
+        it("update() change")
+
+        it("returns the updated row data when updating a single data row")
+
+        it("returns null if attempting to update a site with an id that does not exist")
+
+        it("if returns an array of elements lacking name, location, terminal data ")
     })
-})
-
-jsdom.env(
-  tablehtml,
-  function (errors, window) {
-    console.log("there have been", window.$("a").length, "nodejs releases!");
-  }
-
-
-/*
-Initialisation
-    creates a table DOM element if provided with HTML parent
-    uses existing table element if provided with a <table>
-
-Displaying Data
-    
-
-
-Update Tests
-    throws an error if an attempt is made to update a site that does not exist
-
-*/
-
-//

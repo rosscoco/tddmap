@@ -83,7 +83,7 @@ _p.onGeocodeResponse = function( locationId, geocodedData, status  ){
         case "OVER_QUERY_LIMIT":    this.retry.push( locationId ); 
                                     this.geocodeInterval += this.rateIncrease;
                                     result.msg = "Over query limit/Server Error. Will retry."
-                                    this.onLocationParsed(new Error("Over query limit/Server Error. Will retry."), result );
+                                    this.onLocationParsed(new Error("Over query limit/Server Error."), result );
                                     break
         case "REQUEST_DENIED":
         case "INVALID_REQUEST":

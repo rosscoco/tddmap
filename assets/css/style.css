@@ -1,0 +1,136 @@
+*
+{
+	margin:0;
+	padding:0;
+	
+}
+
+body,html
+{
+	height:100%;
+}
+
+body
+{
+	color:#EEEEEE;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 22px;
+	font-weight:300;
+}
+
+h1
+{
+	font-size:40px;
+}
+
+.table
+{
+	display:table;
+}
+
+.table-row
+{
+	display:table-row;
+}
+
+.full-height-container
+{
+	position:absolute;
+	left:0;
+	bottom:0;
+	top:0;
+}
+
+.left-panel
+{
+	background-color: #282828;
+	width:300px;
+	height:100%;
+}
+
+.terminal-info
+{
+	width:100%;
+}
+
+.left-container h1
+{
+	margin:20px;
+}
+
+.toggle-terminals
+{
+	margin-top: 20px;
+	margin-left: 20px;
+	padding-bottom: 20px;
+	padding-right: 20px;
+	border-bottom: 1px solid #555555;
+}
+
+.toggle-terminals *
+{
+	display: inline-block;
+	margin-right: 20px;
+	vertical-align: middle;
+}
+
+.toggle-terminals button
+{
+	box-sizing:border-box;
+	background: #CCCCCC;
+	color:#111111;
+	box-shadow: inset 0px 0px 0px 3px #282828;
+	border:1px solid #EEEEEE;
+	width:60px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 16px;
+}
+
+.toggle-terminals button:hover
+{
+	background: #EEEEEE;
+}
+
+.site-list-container
+{
+	width:100%;
+	height:100%;
+	padding-top: 20px;
+	position:relative;
+}
+
+.site-list-content-wrapper
+{
+	width:100%;
+	height:100%;
+}
+
+.site-list
+{
+	position:absolute;
+	top:20px;
+	bottom:0;
+	left:0;
+	right:0;
+	font-size:12px;
+	overflow-y:scroll;
+	overflow-x:hidden;
+}
+
+.site-list li
+{
+	padding-left: 20px;
+	list-style: none;
+	cursor: pointer;
+	width:100%;
+}
+.site-list li:hover
+{
+	color:#111111;
+	background-color: #EEEEEE;
+}
+
+
+
