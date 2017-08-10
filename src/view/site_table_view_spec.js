@@ -81,17 +81,52 @@ chai.should();
             var table_rows = table_node.querySelectorAll("tbody tr");
             expect(table_rows.length).to.equal(1);
         })
-                
 
-        it("update() adds a single row if not provided an array")
+        it("Does not add a new row if an element of the Same name & terminal exists", function(){
+            var data = { name:"Site Name", location:"location", terminal:"bramhall" };
+            view.update( data );
+            view.update( data );
+            var table_rows = table_node.querySelectorAll("tbody tr");
+            expect(table_rows.length).to.equal(1);
+        })
 
-        it("update() does not add a new row if the site data exists")
+        it("adds a status-xxxx class to the row html node", function(){
+            var data = { name:"Site Name", location:"location", terminal:"bramhall" };            
 
-        it("update() change")
+            expect(view.update( data )).to.be.true;
+            data.status = "complete";
+            expect(view.update( data )).to.be.true;
 
-        it("returns the updated row data when updating a single data row")
+            var tableRows = table_node.querySelectorAll("tbody tr");    
 
-        it("returns null if attempting to update a site with an id that does not exist")
+            expect(tableRows.length).to.equal(1);
+            expect(tableRows[0].className.indexOf("status-complete")).to.be.above(-1);
+        })
 
-        it("if returns an array of elements lacking name, location, terminal data ")
+        it("removes other status classes when updating", function(){
+            var data = { name:"Site Name", location:"location", terminal:"bramhall" };
+            
+            expect(view.update( data )).to.be.true;
+            data.status = "fetching";            
+            expect(view.update( data )).to.be.true;
+            data.status = "complete";
+            expect(view.update( data )).to.be.true;
+
+            var tableRows = table_node.querySelectorAll("tbody tr");    
+
+            expect(tableRows[0].className.indexOf("status-fetching")).to.be.equal(-1);
+        })
+
+        it("only allows a status class of fetching/pending/complete/failed", function(){
+            var data = { name:"Site Name", location:"location", terminal:"bramhall" };
+              
+
+            expect(view.update( data )).to.be.true;
+            data.status = "invalidClassName";            
+            expect(view.update( data )).to.be.false;
+            
+            var tableRows = table_node.querySelectorAll("tbody tr");    
+
+            expect(tableRows[0].className.indexOf("status-invalidClassName")).to.be.equal(-1);
+        })
     })
