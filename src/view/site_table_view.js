@@ -29,28 +29,18 @@ _p.initView = function( table_node ){
 }
 
 _p.update = function( withData ) {
-    if ( withData &&
-         withData.hasOwnPropery('name') &&
-         withData.hasOwnPropery('terminal') && 
-         withData.hasOwnPropery('location')) {
+    if ( !!withData && 
+        !!withData.hasOwnProperty && 
+        withData.hasOwnProperty('name')     && withData.name.replace(" ","").length > 1 &&
+        withData.hasOwnProperty('terminal') && withData.name.replace(" ","").length > 1 &&
+        withData.hasOwnProperty('location') && withData.location.replace(" ","").length > 1 ) {
             
-        // var tableRow = doesRowExist( withData )
-
-        // if ( !tableRow ) {
-        //     addNewRow( withData );
-        // }
-
-        //  updateRowData( withData )
-
-         return { success:true, msg:withData.name + "updated!" };
+         return true;
 
     } else {
-        return { success:false,msg:"Name/Location/Terminal not defined" };
+        return false;
     }
 }
-
-_p.
-
 
 module.exports = SiteTableView;
 

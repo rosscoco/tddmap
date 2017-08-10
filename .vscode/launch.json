@@ -14,7 +14,7 @@
                 "runtimeExecutable": "mocha.cmd"
             },
             "runtimeArgs": [
-                "src/model/location_csv_loader_spec.js"
+                "src/view/site_table_view_spec.js"
             ],
             "console": "integratedTerminal"
         }

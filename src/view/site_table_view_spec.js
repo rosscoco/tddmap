@@ -5,6 +5,7 @@ var SiteTableView = require('./site_table_view.js');
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 var Helpers = require("../helper/site_table_view_data.js")
+chai.should();
 
     describe("Initialisation...", function(){
         
@@ -12,6 +13,7 @@ var Helpers = require("../helper/site_table_view_data.js")
         var table_node;
         var view;
         var DOM;
+        
         beforeEach( function(){
             DOM = new JSDOM(Helpers.getTableHTML());
             table_node = DOM.window.document.getElementById("site-table-view");
@@ -48,6 +50,7 @@ var Helpers = require("../helper/site_table_view_data.js")
         })
     })
 
+
    describe("Update site data..", function(){
 
         beforeEach( function(){
@@ -57,9 +60,19 @@ var Helpers = require("../helper/site_table_view_data.js")
             view = new SiteTableView( table_node );
         });
 
-        it("returns false if name/location/terminal are not valid", function(){
-            var data = {name:"", location:"", terminal:"" }
-            expect( view.update( data ) ).to.be.false();
+        it("returns false if name/location/terminal are not present", function(){
+            var data = {}
+            expect( view.update( data ) ).to.be.false;
+        })  
+
+        it("returns false if name/location/terminal are not empty strings", function(){
+            var data = { name:"Is Not Empty", location:"", terminal:"" }
+            expect( view.update( data ) ).to.be.false;
+        })  
+
+        it("returns true if name/location/terminal are non-zero length strings", function(){
+            var data = { name:"true", location:"location", terminal:"bramhall" }
+            expect( view.update( data ) ).to.be.true;
         })  
         
 
