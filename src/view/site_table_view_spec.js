@@ -61,24 +61,27 @@ chai.should();
         });
 
         it("returns false if name/location/terminal are not present", function(){
-            var data = {}
+            var data = {};
             expect( view.update( data ) ).to.be.false;
         })  
 
         it("returns false if name/location/terminal are not empty strings", function(){
-            var data = { name:"Is Not Empty", location:"", terminal:"" }
+            var data = { name:"Is Not Empty", location:"", terminal:"" };
             expect( view.update( data ) ).to.be.false;
         })  
 
         it("returns true if name/location/terminal are non-zero length strings", function(){
-            var data = { name:"true", location:"location", terminal:"bramhall" }
+            var data = { name:"true", location:"location", terminal:"bramhall" };
             expect( view.update( data ) ).to.be.true;
-        })  
+        })
         
-
-        it("update() adds a row for every entry provided in an array")
-
-        it("update() does not add a row if the data lacks name, site")
+        it("Adds a new row to the table if the row data does not exist", function(){
+            var data = { name:"Site Name", location:"location", terminal:"bramhall" };
+            view.update( data );
+            var table_rows = table_node.querySelectorAll("tbody tr");
+            expect(table_rows.length).to.equal(1);
+        })
+                
 
         it("update() adds a single row if not provided an array")
 
