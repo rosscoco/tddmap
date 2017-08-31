@@ -1,8 +1,9 @@
 body
 {
-	background-color:#282828;
+	background-color:#18121E;
+	color:#D5D5D5;
 	font-family: 'Open Sans', sans-serif;
-	font-size: 11px;
+	font-size: 16px;
 	font-weight:300;
 }
 
@@ -24,4 +25,19 @@ body
 	font-family: 'Open Sans', sans-serif;
 	font-size: 16px;
 }
+
+table {
+  background-color:#D5D5D5;
+  color:#18121E;
+}
+
+
+.td-status {
+	text-align: center;
+}
+.td-status-default  { color:#000000; }
+.td-status-failed   { color:#DD0000; }
+.td-status-fetching { color:#ffe217; }
+.td-status-complete { color:#009525; }
+
 

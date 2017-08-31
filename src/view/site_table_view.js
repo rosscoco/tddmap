@@ -17,6 +17,11 @@
 function SiteTableView( tableNode ) {
     if ( tableNode && tableNode.nodeType && tableNode.nodeType === 1 && tableNode.nodeName === "TABLE" ){
         this.tableNode = tableNode;
+        this.statusIconClasses = {  default:"fa fa-fw fa-minus",
+                                    pending:"fa fa-fw fa-exclamation-triangle",
+                                    fetching:"fa fa-fw fa-spinner fa-pulse",
+                                    failed:"fa fa-fw fa-times-circle",
+                                    complete:"fa fa-fw fa-check-circle" }
     } else {
         throw new IllegalArgumentError("SiteTableView instantiated without a <table>");
     }
@@ -61,7 +66,12 @@ _p.createRow = function( rowData ){
     name.innerHTML = rowData.name;
     location.innerHTML = rowData.location;
     terminal.innerHTML = rowData.terminal;
-    status.innerHTML = "<span></span>"
+    status.innerHTML = "<i class='" + this.statusIconClasses.default + "fa fa-fw fa-minus'></i>"
+
+    name.className = "td-name"
+    location.className = "td-location" ;
+    terminal.className = "td-terminal"
+    status.className = "td-status";
 }
 
 _p.isValidStatus = function( statusStr ){
@@ -70,19 +80,21 @@ _p.isValidStatus = function( statusStr ){
 
 _p.modifyRowData = function( row, rowData ){
     if ( rowData.hasOwnProperty('status') && this.isValidStatus( rowData.status ) ){
-        var classes = row.className;
-        
-        ["status-pending","status-failed","status-fetching","status-complete"].forEach( function( toRemove ){
-            classes = classes.replace(toRemove, "");
-        })
+        //var classes = row.className;
+       
+        row.className = "td-status td-status-" + rowData.status;
+        var icon = row.querySelector("i.fa");
+        icon.className = this.statusIconClasses[rowData.status];
+        // // ["status-pending","status-failed","status-fetching","status-complete"].forEach( function( toRemove ){
+        // //     classes = classes.replace(toRemove, "");
+        // // })
 
-        classes +="status-" + rowData.status;
-        row.className = classes;
+        // classes +="status-" + rowData.status;
+        // row.className = classes;
         return true;
     } else {
         return false;
     }
-
 }
 
 module.exports = SiteTableView;

@@ -40,7 +40,7 @@ chai.should();
             mock_window.document.body.appendChild(fake_node);
 
             expect( function(){
-                new SiteTableView( fake_node, { window:mock_window  });
+                new SiteTableView( fake_node, { window:mock_window });
             }).to.throw();
         });
 
@@ -90,17 +90,17 @@ chai.should();
             expect(table_rows.length).to.equal(1);
         })
 
-        it("adds a status-xxxx class to the row html node", function(){
+        it("adds a td-status-xxxx class to the row html node", function(){
             var data = { name:"Site Name", location:"location", terminal:"bramhall" };            
 
             expect(view.update( data )).to.be.true;
             data.status = "complete";
             expect(view.update( data )).to.be.true;
 
-            var tableRows = table_node.querySelectorAll("tbody tr");    
+            var tableRows = table_node.querySelectorAll("tbody tr");
 
             expect(tableRows.length).to.equal(1);
-            expect(tableRows[0].className.indexOf("status-complete")).to.be.above(-1);
+            expect(tableRows[0].className.indexOf("td-status-complete")).to.be.above(-1);
         })
 
         it("removes other status classes when updating", function(){
@@ -117,6 +117,33 @@ chai.should();
             expect(tableRows[0].className.indexOf("status-fetching")).to.be.equal(-1);
         })
 
+        it("changes the font-awesome <i> tag class when updating the status to pending, failed, fetching, complete", function(){
+            var data = { name:"Site Name", location:"location", terminal:"bramhall"};
+            view.update( data );
+
+            var fontAwesomeTag = table_node.querySelectorAll("tbody tr i")[ 0 ];
+            
+            expect( fontAwesomeTag.className.indexOf("fa-minus"), "Missing fa-minus class on status icon").to.not.be.equal( -1 );
+            //default is fa-minus for an inactive geocode
+
+            data.status = "pending";
+            view.update( data );
+            expect( fontAwesomeTag.className.indexOf("fa-exclamation-triangle"), "Missing fa-exclamation-triangle class on status icon").to.not.be.equal(-1);
+            
+            data.status = "fetching";
+            view.update( data );
+            expect( fontAwesomeTag.className.indexOf("fa-spinner"), "Missing fa-spinner class on status icon").to.not.be.equal(-1);
+
+            data.status = "failed";
+            view.update( data );
+            expect( fontAwesomeTag.className.indexOf("fa-times-circle"), "Missing fa-times-circle class on status icon").to.not.be.equal(-1);
+
+            data.status = "complete";
+            view.update( data );
+            expect( fontAwesomeTag.className.indexOf("fa-check-circle"), "Missing fa-check-circle class on status icon").to.not.be.equal(-1);
+        })
+        
+
         it("only allows a status class of fetching/pending/complete/failed", function(){
             var data = { name:"Site Name", location:"location", terminal:"bramhall" };
               
@@ -125,7 +152,7 @@ chai.should();
             data.status = "invalidClassName";            
             expect(view.update( data )).to.be.false;
             
-            var tableRows = table_node.querySelectorAll("tbody tr");    
+            var tableRows = table_node.querySelectorAll("tbody tr");
 
             expect(tableRows[0].className.indexOf("status-invalidClassName")).to.be.equal(-1);
         })

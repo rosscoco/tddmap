@@ -11,6 +11,8 @@
         <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600|Lora' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="./css/bootstrap.css">
         <link rel="stylesheet" href="./css/table_view.css">
+        <link rel="stylesheet" href="./css/font-awesome.css">
+
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <script src="app.js"></script>
     </head>
@@ -19,12 +21,14 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
         
-        <div class="page">
-            <h2>Select site data .csv to load</h2>
-            <input id="file-input" type="file" accept=".txt,.csv">
+        <div class="page" >
+            <h1>Import Site Data</h1>
+            <p>Use this tool to load a .CSV file containing site data. Site data can be exported from <a href="notyetcreated.html">This report</a> on Salesforce</p>
+            <input id="file-input-button" type="file" accept=".txt,.csv">
             <div class="table-holder">
-                <table class="table table-striped" id="site-table-view">
-                    <thead class="thead-inverse">
+                <table class="table table-sm" id="site-table-view">
+                    <colgroup span="1"></colgroup>
+                    <thead>
                         <tr>
                             <th>Name</th>
                             <th>Address</th>
@@ -34,28 +38,44 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Site 1</td>
-                            <td>12 nowhere</td>
-                            <td>Bramhall</td>
-                            <td class="status_pending"></td>
+                            <td class="td-name">Site 1</td>
+                            <td class="td-location">12 nowhere</td>
+                            <td class="td-terminal col-md-2">Bramhall</td>
+                            <td class="td-status td-status-inactive col-md-1">
+                                <i class="fa fa-minus fa-fw"></i>
+                            </td>
                         </tr>
                         <tr>
-                            <td>Site 1</td>
-                            <td>12 nowhere</td>
-                            <td>Bramhall</td>
-                            <td class="status_pending"></td>
+                            <td class="td-name">Site 1</td>
+                            <td class="td-location">12 nowhere</td>
+                            <td class="td-terminal col-md-2">Bramhall</td>
+                            <td class="td-status td-status-pending col-md-1">
+                                <i class="fa fa-exclamation-triangle fa-fw"></i>
+                            </td>
                         </tr>
                         <tr>
-                            <td>Site 1</td>
-                            <td>12 nowhere</td>
-                            <td>Bramhall</td>
-                            <td class="status_pending"></td>
+                            <td class="td-name">Site 1</td>
+                            <td class="td-location">12 nowhere</td>
+                            <td class="td-terminal">Bramhall</td>
+                            <td class="td-status td-status-fetching">
+                                <i class="fa fa-spinner fa-pulse fa-fw"></i>
+                            </td>
                         </tr>
                         <tr>
-                            <td>Site 1</td>
-                            <td>12 nowhere</td>
-                            <td>Bramhall</td>
-                            <td class="status_pending"></td>
+                            <td class="td-name">Site 1</td>
+                            <td class="td-location">12 nowhere</td>
+                            <td class="td-terminal">Bramhall</td>
+                            <td class="td-status td-status-failed">
+                                <i class="fa fa-times-circle fa-fw"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td-name">Site 1</td>
+                            <td class="td-location">12 nowhere</td>
+                            <td class="td-terminal">Bramhall</td>
+                            <td class="td-status td-status-complete">
+                                <i class="fa fa-check-circle fa-fw"></i>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
