@@ -2,32 +2,29 @@
 /* Mock Objects:
 
 MockBatchGeocoder
-
+MockSiteTableView
+MockCSVParser
 
 */
 
 
 describe("CSV Data File Loading", function(){
 
-    it("Does not initiate batch geocoding if parsing failed",function(){
-
-    })
-
-    it("Does not initiate batch geocoding if file does not contain any entries",function(){
-
-    })
-
-    it("Initiates the Site Table View with the parsed CSV data", function(){
-
-    })
-
-    it("Initiates batch geocoding if csv parsing successfull",function(){
+    it("responds to the change event of the file selector and sends the file to the CSV loader",function(){
         
     })
 
-    it("displays an error if the wrong file type is provided", function(){
+    it("Does not initiate batch geocoding if parsing failed")
 
-    })
+    
+
+    it("Does not initiate batch geocoding if file does not contain any entries")
+
+    it("Initiates the Site Table View with the parsed CSV data")
+
+    it("Initiates batch geocoding if csv parsing successfull")
+
+    it("displays an error if the wrong file type is provided")
 })
 
 

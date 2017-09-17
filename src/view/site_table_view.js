@@ -56,7 +56,7 @@ _p.rowExists = function( withData ){
 
 _p.createRow = function( rowData ){
     var row = this.tableNode.querySelector("tbody").insertRow();
-    row.id = (rowData.terminal + "_" + rowData.name).replace(" ","");
+    row.id = ( rowData.terminal + "_" + rowData.name ).replace( " ","" );
 
     var name = row.insertCell();
     var location = row.insertCell();
@@ -69,7 +69,7 @@ _p.createRow = function( rowData ){
     status.innerHTML = "<i class='" + this.statusIconClasses.default + "fa fa-fw fa-minus'></i>"
 
     name.className = "td-name"
-    location.className = "td-location" ;
+    location.className = "td-location";
     terminal.className = "td-terminal"
     status.className = "td-status";
 }
@@ -80,17 +80,11 @@ _p.isValidStatus = function( statusStr ){
 
 _p.modifyRowData = function( row, rowData ){
     if ( rowData.hasOwnProperty('status') && this.isValidStatus( rowData.status ) ){
-        //var classes = row.className;
        
         row.className = "td-status td-status-" + rowData.status;
         var icon = row.querySelector("i.fa");
         icon.className = this.statusIconClasses[rowData.status];
-        // // ["status-pending","status-failed","status-fetching","status-complete"].forEach( function( toRemove ){
-        // //     classes = classes.replace(toRemove, "");
-        // // })
 
-        // classes +="status-" + rowData.status;
-        // row.className = classes;
         return true;
     } else {
         return false;

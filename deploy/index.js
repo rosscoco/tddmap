@@ -29,7 +29,7 @@ var LocationLoader = require("../../src/models/location_data_loader");
             geocoder.start();
         }
 
-        function onLocationsGeocoded(err, results){
+        function onLocationsGeocoded( err, results ){
             debugger;
         }
     }
