@@ -1,8 +1,7 @@
 module.exports.getTableHTML = getTableHTML;
 
-function getTableHTML()  
-{
-   var html= `<html>
+function getTableHTML() {
+    var html = `<html>
                     <body>
                         <div id="table-holder">
                             <table class="table table-striped table-inverse table-bordered table-hover" id="site-table-view">
@@ -20,9 +19,8 @@ function getTableHTML()
                             </table>
                         </div>
                     </body>
-                </html>`
+                </html>`;
     return html;
 }
 
-
-var table_html = ``
+var table_html = ``;
