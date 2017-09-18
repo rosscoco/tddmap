@@ -1,0 +1,99 @@
+.terminal-list
+{
+	line-height:20px;
+}
+
+.terminal-list li
+{
+	list-style: none;
+	padding-left:20px;
+}
+
+input[type='checkbox']
+{
+	border:1px solid yellow;
+	background-color: #282828
+}
+
+.list-cb
+{
+	opacity:0;
+	position:absolute;
+}
+
+.list-cb-label
+{
+	width:100%;
+}
+ 
+input[id=check-aberdeencaledonian]:checked + .list-cb-label:before,
+input[id=check-inverness]:checked + .list-cb-label:before,
+input[id=check-grangemouth]:checked + .list-cb-label:before
+{
+	background:#2ECD71;
+}
+
+input[id=check-bramhall]:checked + .list-cb-label:before
+{
+	background:#19BD9B;
+}
+
+input[id=check-ipc]:checked + .list-cb-label:before
+{
+	background:#E84C3D;
+}
+
+input[id=check-birmingham]:checked + .list-cb-label:before,
+input[id=check-kingsbury]:checked + .list-cb-label:before
+{
+	background:#9A59B5;
+}
+
+input[id=check-northtees]:checked + .list-cb-label:before,
+input[id=check-teessidevopak]:checked + .list-cb-label:before
+{
+	background:#F2C40F;
+}
+
+
+input[id=check-coryton]:checked + .list-cb-label:before,
+input[id=check-thames]:checked + .list-cb-label:before,
+input[id=check-grays]:checked + .list-cb-label:before,
+input[id=check-westlondon]:checked + .list-cb-label:before
+{
+	background:#304cd5;
+}
+
+input[id=check-labels]:checked + .list-cb-label:before
+{
+	background:#EEEEEE;
+}
+
+.list-cb-label
+{
+	position:relative;
+}
+
+.list-cb, .list-cb-label
+{
+	display:inline-block;
+	vertical-align: middle;
+	margin:5px;
+	cursor:pointer;
+}
+
+.list-cb + .list-cb-label:before
+{
+	content:'';
+	box-sizing:border-box;
+   
+	background: #282828;
+	box-shadow: inset 0px 0px 0px 3px #282828;
+	border:1px solid #EEEEEE;
+	display:inline-block;
+	vertical-align: middle;
+	width:23px;
+	height:23px;
+	margin-right:22px;
+	text-align: center;
+}

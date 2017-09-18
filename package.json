@@ -5,12 +5,14 @@
   "main": "index.js",
   "dependencies": {
     "chai": "^3.5.0",
+    "concurrently": "^3.5.0",
     "express": "^4.15.2",
     "open": "^0.0.5",
-    "sinon": "^2.1.0"
+    "sinon": "^2.1.0",
+    "watchify": "^3.9.0"
   },
-  "jshint":{
-    "esversion":6
+  "jshint": {
+    "esversion": 6
   },
   "devDependencies": {
     "babyparse": "^0.4.6",
@@ -18,22 +20,24 @@
     "cpx": "^1.5.0",
     "jsdom": "^11.0.0",
     "jshint": "^2.9.5",
-    "light-server": "^2.2.1",
     "lite-server": "^2.3.0",
     "rimraf": "^2.6.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "launch": "node buildScripts/runServer.js",
     "clean": "rimraf deploy/*",
-    "lint":"jshint --exclude "*_spec.js" src/.",
+    "lint": "jshint src/.",
+    "launch":"concurrently \"watchify src/application/import_data_application.js -o deploy/js/app.js -v\" \"http-server ./deploy/ -c-1\"",
+    "assets:copy": "cpx assets/**/*.{js,csv,html,css,json} deploy",
     "geocode:test": "mocha src/test/location_finder_spec.js",
     "geocode:bundle": "browserify sandbox/geocode-from-csv/index.js > sandbox/geocode-from-csv/js/app.js",
     "geocode:copy": "cpx sandbox/geocode-from-csv/**/*.{js,csv,html} deploy && cpx src/**/*.js deploy && cpx lib/**/*.js deploy/lib",
     "geocode:build": "npm run clean && npm run geocode:bundle && npm run geocode:copy",
     "tableview:bundle": "browserify sandbox/sitetableview/js/app.js > sandbox/sitetableview/deploy/app.js",
     "tableview:copy": "cpx -w sandbox/sitetableview/deploy/**/*.{js,csv,html,css} deploy && cpx src/**/*.js deploy",
-    "tableview:build": "npm run clean && npm run tableview:bundle && npm run tableview:copy"
+    "tableview:build": "npm run clean && npm run tableview:bundle && npm run tableview:copy",
+    "importer:bundle": "browserify src/application/import_data_application.js > deploy/js/app.js",
+    "importer:build": "npm run clean && npm run assets:copy && npm run importer:bundle && npm run launch"
   },
   "repository": {
     "type": "git",

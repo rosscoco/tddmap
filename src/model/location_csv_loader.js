@@ -70,7 +70,7 @@ var Utils = (function() {
     };
 
     this.areHeadersPresent = function(parsedHeaders) {
-        var headersExist = ["name", "location", "terminal"].every(function(
+        var headersExist = ["name", "address", "terminal"].every(function(
             header
         ) {
             return parsedHeaders.indexOf(header) !== -1;

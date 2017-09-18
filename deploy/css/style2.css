@@ -1,0 +1,33 @@
+html,body
+{
+	height:100%;
+	margin:0;
+}
+
+.left-container
+{
+	display:table;
+	background-color: blue;
+	height:100%;
+	width:300px;
+}
+
+.site-list
+{
+	height:100%;
+	overflow:auto;
+}
+
+.page-row
+{
+	display:table-row;
+	height:0;
+}
+
+.page-row-expanded
+{
+	height:100%;
+}
+
+
+

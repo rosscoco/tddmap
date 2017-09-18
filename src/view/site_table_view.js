@@ -27,7 +27,7 @@ function SiteTableView(tableNode) {
             complete: "fa fa-fw fa-check-circle"
         };
     } else {
-        throw new IllegalArgumentError(
+        throw new Error(
             "SiteTableView instantiated without a <table>"
         );
     }
