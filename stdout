@@ -1,0 +1,5 @@
+src\application\import_data_application.js: line 6, col 59, Missing semicolon.
+
+src\controller\import_data_controller.js: line 59, col 6, Missing semicolon.
+
+2 errors
