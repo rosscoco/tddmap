@@ -8,6 +8,7 @@
     "concurrently": "^3.5.0",
     "express": "^4.15.2",
     "jshint-stylish": "^2.2.1",
+    "live-server": "^1.2.0",
     "npm-watch": "^0.2.0",
     "open": "^0.0.5",
     "sinon": "^2.1.0",
@@ -30,6 +31,7 @@
     "clean": "rimraf deploy/*",
     "lint": "jshint src/. --reporter=node_modules/jshint-stylish  || cd .",
     "launch": "http-server ./deploy/ -c-1",
+    "livelaunch":"live-server --port=8080 --wait=200 --host=127.0.0.1 --no-browser ./deploy/",
     "oldlaunch": "concurrently \"watchify src/application/import_data_application.js -o deploy/js/app.js -v\" \"npm run http\"",
     "assets:copy": "cpx assets/**/*.{js,csv,html,css,json,eot,ttf,otf,woff,woff2} deploy",
     "geocode:test": "mocha src/test/location_finder_spec.js",
@@ -56,13 +58,18 @@
   },
   "homepage": "https://github.com/rosscoco/tddmap#readme",
   "watch": {
-    "importer:bundle":{
-      "patterns": ["src", "test"],
+    "importer:bundle": {
+      "patterns": [
+        "src",
+        "test"
+      ],
       "extensions": "js,jsx",
-      "inherit":true
+      "inherit": true
     },
-    "assets:copy":{
-      "patterns": ["assets"],
+    "assets:copy": {
+      "patterns": [
+        "assets"
+      ],
       "extensions": "css,html"
     }
   }
