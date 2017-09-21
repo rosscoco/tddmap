@@ -3,7 +3,7 @@ body
 	background-color:#18121E;
 	color:#D5D5D5;
 	font-family: 'Open Sans', sans-serif;
-	font-size: 16px;
+	font-size: 14px;
 	font-weight:300;
 }
 
@@ -29,15 +29,16 @@ body
 table {
   background-color:#D5D5D5;
   color:#18121E;
+  max-width:800px;
 }
 
 
-.td-status {
+tr {
 	text-align: center;
 }
-.td-status-default  { color:#000000; }
-.td-status-failed   { color:#DD0000; }
-.td-status-fetching { color:#ffe217; }
-.td-status-complete { color:#009525; }
+.td-status-default  .td-status { color:#000000; }
+.td-status-failed   .td-status { color:#DD0000; }
+.td-status-fetching .td-status { color:#ffe217; }
+.td-status-complete .td-status { color:#009525; }
 
 

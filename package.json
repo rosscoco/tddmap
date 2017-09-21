@@ -42,7 +42,7 @@
     "preimporter:bundle": "npm run lint",
     "importer:bundle": "browserify src/application/import_data_application.js > deploy/js/app.js",
     "importer:build": "npm run clean && npm run assets:copy && npm run importer:bundle",
-    "importer:watch": "npm-watch importer:bundle"
+    "importer:watch": "concurrently \"npm-watch importer:bundle\"  \"npm-watch assets:copy\""
   },
   "repository": {
     "type": "git",
@@ -60,6 +60,10 @@
       "patterns": ["src", "test"],
       "extensions": "js,jsx",
       "inherit":true
+    },
+    "assets:copy":{
+      "patterns": ["assets"],
+      "extensions": "css,html"
     }
   }
 }
