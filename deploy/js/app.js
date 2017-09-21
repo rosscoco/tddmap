@@ -53,26 +53,65 @@ function ImportDataController( node ){
 
     var pageDOM = node;
     var controller = this;
-    
+    var batchGeocoder;
     var fileInput   = pageDOM.querySelector( "#file-input-btn" );
-    var view        = new SiteTableView( withDOM.querySelector("#site-table-view"));
-    var csvLoader   = new CSVLoader( Papa.parse, _onParseComplete.bind( controller ));
+    var view        = new SiteTableView( pageDOM.querySelector("#site-table-view"));
+    var csvLoader   = new CSVLoader( Papa.parse, _onParseComplete );
+    var siteData    = {};
     
     fileInput.addEventListener("change", function(evt) {
-       csvLoader.onFileSelected(evt);
+       csvLoader.onFileSelected( evt );
     });
 
-   _onParseComplete = function(err, results) {
+    function _onParseComplete(err, results) {
         if (err) {
-            this.showError(err);
+            _showError(err);
         } else {
-            this.showCSVData(results);
+            _getLocationData(results);
         }
-    };
+    }
 
-    _showCSVData = function(csvData) {
-        console.log(csvData);
-    };
+    function _getLocationData(csvData) {
+        var locationsArr = [];
+        
+        csvData.data.forEach(function(element) {
+            locationsArr.push( element.address );
+            siteData[ element.address ] = {name:element.name, location:element.address, terminal:element.terminal, lat:0, lng:0, status:"pending" };
+            view.update(siteData[ element.address ]);
+        });
+
+        batchGeocoder = new GeoCoder( locationsArr, new google.maps.Geocoder(),_onAllLocationsEncoded,{ onUpdate:_onGeoLocationDataUpdated } );
+        batchGeocoder.start();
+    }
+
+    function _showError( err, data ){
+        console.log(err,data)
+    }
+
+    function _onGeoLocationDataUpdated(err, result ){
+        //result = { locationId: locationId, status: status, msg: "", lat:"",lng:"",full_address:"" };
+        var site;
+        
+        if (err){
+            _showError(err, result);
+        }
+        else{
+            try {
+                site = siteData[result.locationId];
+                site.status = result.status;
+                site.lat = result.lat;
+                site.lng = result.lng;
+                site.full_address = result.full_address;
+                view.update(site);
+            } catch( e ) {
+                _showError(new Error("Invalid location data received"), result );
+            }
+        }
+    }
+
+    function _onAllLocationsEncoded( results ){
+        console.log("Done");
+    }
 }
 },{"../model/batch_geocoder":3,"../model/location_csv_loader":4,"../view/site_table_view":5}],3:[function(require,module,exports){
 //var assert = require('assert');
@@ -88,6 +127,7 @@ function BatchGeocoder(tofind, geocoder, onComplete, settings) {
     }
 
     this.onComplete = onComplete;
+    this.onUpdate = settings.onUpdate;
     this.success = [];
     this.retry = []; //for rate limited requests
     this.errors = [];
@@ -141,7 +181,7 @@ _p.onGeocodeResponse = function(locationId, geocodedData, status) {
         this.logger("Geocoder:" + locationId, geocodedData, status);
     }
 
-    var result = { locationId: locationId, status: status, msg: "" };
+    var result = { locationId: locationId, status: status, msg: "", lat:"",lng:"",full_address:"" };
 
     switch (status) {
         case "OK":
@@ -150,9 +190,11 @@ _p.onGeocodeResponse = function(locationId, geocodedData, status) {
                 result.lng = geocodedData[0].geometry.location.lng();
                 result.full_address = geocodedData[0].formatted_address;
                 result.msg = "Location Found";
+                result.status = "complete";
                 this.onLocationParsed(null, result);
             } else {
                 result.msg = "Multiple locations found for address.";
+                result.status = "pending";
                 this.onLocationParsed(
                     new Error("Multiple locations found for address."),
                     result
@@ -164,6 +206,7 @@ _p.onGeocodeResponse = function(locationId, geocodedData, status) {
             this.retry.push(locationId);
             this.geocodeInterval += this.rateIncrease;
             result.msg = "Over query limit/Server Error. Will retry.";
+            result.status = "pending";
             this.onLocationParsed(
                 new Error("Over query limit/Server Error."),
                 result
@@ -174,6 +217,7 @@ _p.onGeocodeResponse = function(locationId, geocodedData, status) {
         //case "ZERO RESULTS":
         default:
             result.msg = "Not Found!";
+            result.status = "failed";
             this.onLocationParsed(new Error("Location Not Found"), result);
             break;
     }
@@ -185,6 +229,8 @@ _p.onLocationParsed = function(err, result) {
     } else {
         this.success.push(result);
     }
+
+    this.onUpdate(err, result);
 
     this.checkQueueForNextLocation();
 };
@@ -379,14 +425,14 @@ _p.update = function(withData) {
 };
 
 _p.rowExists = function(withData) {
-    var id = (withData.terminal + "_" + withData.name).replace(" ", "");
+    var id = (withData.terminal + "_" + withData.name).replace(/[^\w\d]/gi, '');
     var row = this.tableNode.querySelector("tbody").querySelector("#" + id);
     return row;
 };
 
 _p.createRow = function(rowData) {
     var row = this.tableNode.querySelector("tbody").insertRow();
-    row.id = (rowData.terminal + "_" + rowData.name).replace(" ", "");
+    row.id = (rowData.terminal + "_" + rowData.name).replace(/[^\w\d]/gi, '') //exclude non letter/number characters
 
     var name = row.insertCell();
     var location = row.insertCell();
@@ -421,6 +467,11 @@ _p.modifyRowData = function(row, rowData) {
         row.className = "td-status td-status-" + rowData.status;
         var icon = row.querySelector("i.fa");
         icon.className = this.statusIconClasses[rowData.status];
+
+        var tbody = this.tableNode.querySelector("tbody");
+        var firstRow = tbody.querySelector("tr:first-child");
+        tbody.removeChild(row)
+        tbody.insertBefore(row,firstRow);
 
         return true;
     } else {

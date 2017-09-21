@@ -61,14 +61,14 @@ _p.update = function(withData) {
 };
 
 _p.rowExists = function(withData) {
-    var id = (withData.terminal + "_" + withData.name).replace(" ", "");
+    var id = (withData.terminal + "_" + withData.name).replace(/[^\w\d]/gi, '');
     var row = this.tableNode.querySelector("tbody").querySelector("#" + id);
     return row;
 };
 
 _p.createRow = function(rowData) {
     var row = this.tableNode.querySelector("tbody").insertRow();
-    row.id = (rowData.terminal + "_" + rowData.name).replace(" ", "");
+    row.id = (rowData.terminal + "_" + rowData.name).replace(/[^\w\d]/gi, '') //exclude non letter/number characters
 
     var name = row.insertCell();
     var location = row.insertCell();
@@ -103,6 +103,11 @@ _p.modifyRowData = function(row, rowData) {
         row.className = "td-status td-status-" + rowData.status;
         var icon = row.querySelector("i.fa");
         icon.className = this.statusIconClasses[rowData.status];
+
+        var tbody = this.tableNode.querySelector("tbody");
+        var firstRow = tbody.querySelector("tr:first-child");
+        tbody.removeChild(row)
+        tbody.insertBefore(row,firstRow);
 
         return true;
     } else {

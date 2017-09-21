@@ -29,9 +29,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rimraf deploy/*",
     "lint": "jshint src/. --reporter=node_modules/jshint-stylish  || cd .",
-    "launch": "http-server ./deploy/ -c-1 && npm run wa",
+    "launch": "http-server ./deploy/ -c-1",
     "oldlaunch": "concurrently \"watchify src/application/import_data_application.js -o deploy/js/app.js -v\" \"npm run http\"",
-    "assets:copy": "cpx assets/**/*.{js,csv,html,css,json} deploy",
+    "assets:copy": "cpx assets/**/*.{js,csv,html,css,json,eot,ttf,otf,woff,woff2} deploy",
     "geocode:test": "mocha src/test/location_finder_spec.js",
     "geocode:bundle": "browserify sandbox/geocode-from-csv/index.js > sandbox/geocode-from-csv/js/app.js",
     "geocode:copy": "cpx sandbox/geocode-from-csv/**/*.{js,csv,html} deploy && cpx src/**/*.js deploy && cpx lib/**/*.js deploy/lib",
@@ -41,7 +41,7 @@
     "tableview:build": "npm run clean && npm run tableview:bundle && npm run tableview:copy",
     "preimporter:bundle": "npm run lint",
     "importer:bundle": "browserify src/application/import_data_application.js > deploy/js/app.js",
-    "importer:build": "npm run clean && npm run assets:copy && npm run importer:bundle && npm run launch",
+    "importer:build": "npm run clean && npm run assets:copy && npm run importer:bundle",
     "importer:watch": "npm-watch importer:bundle"
   },
   "repository": {

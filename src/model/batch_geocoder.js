@@ -11,6 +11,7 @@ function BatchGeocoder(tofind, geocoder, onComplete, settings) {
     }
 
     this.onComplete = onComplete;
+    this.onUpdate = settings.onUpdate;
     this.success = [];
     this.retry = []; //for rate limited requests
     this.errors = [];
@@ -64,7 +65,7 @@ _p.onGeocodeResponse = function(locationId, geocodedData, status) {
         this.logger("Geocoder:" + locationId, geocodedData, status);
     }
 
-    var result = { locationId: locationId, status: status, msg: "" };
+    var result = { locationId: locationId, status: status, msg: "", lat:"",lng:"",full_address:"" };
 
     switch (status) {
         case "OK":
@@ -73,9 +74,11 @@ _p.onGeocodeResponse = function(locationId, geocodedData, status) {
                 result.lng = geocodedData[0].geometry.location.lng();
                 result.full_address = geocodedData[0].formatted_address;
                 result.msg = "Location Found";
+                result.status = "complete";
                 this.onLocationParsed(null, result);
             } else {
                 result.msg = "Multiple locations found for address.";
+                result.status = "pending";
                 this.onLocationParsed(
                     new Error("Multiple locations found for address."),
                     result
@@ -87,6 +90,7 @@ _p.onGeocodeResponse = function(locationId, geocodedData, status) {
             this.retry.push(locationId);
             this.geocodeInterval += this.rateIncrease;
             result.msg = "Over query limit/Server Error. Will retry.";
+            result.status = "pending";
             this.onLocationParsed(
                 new Error("Over query limit/Server Error."),
                 result
@@ -97,6 +101,7 @@ _p.onGeocodeResponse = function(locationId, geocodedData, status) {
         //case "ZERO RESULTS":
         default:
             result.msg = "Not Found!";
+            result.status = "failed";
             this.onLocationParsed(new Error("Location Not Found"), result);
             break;
     }
@@ -108,6 +113,8 @@ _p.onLocationParsed = function(err, result) {
     } else {
         this.success.push(result);
     }
+
+    this.onUpdate(err, result);
 
     this.checkQueueForNextLocation();
 };
